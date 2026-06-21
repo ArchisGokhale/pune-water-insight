@@ -740,9 +740,12 @@ export default function WaterPlatform() {
           <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 items-center">
             <div className="text-white">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-3 py-1 text-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-safe animate-pulse" />
-                <span className="font-mono uppercase tracking-wider text-white/80">Monsoon 2026 · Active</span>
+                <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isLive ? "bg-safe" : "bg-warn"}`} />
+                <span className="font-mono uppercase tracking-wider text-white/80">
+                  {isLive ? "Live · Open-Meteo · Monsoon Active" : "Monsoon Active · loading live feed"}
+                </span>
               </div>
+
               <h1 className="mt-6 font-display text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
                 Pune's water,<br />
                 <span className="text-gradient-aqua">in real time.</span>
@@ -761,10 +764,10 @@ export default function WaterPlatform() {
 
               <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { l: "Current", v: "4.2", u: "mm/h", i: CloudRain },
-                  { l: "Today", v: "38", u: "mm", i: Droplets },
-                  { l: "7 Day", v: "142", u: "mm", i: Calendar },
-                  { l: "Season", v: "1,242", u: "mm", i: Wind },
+                  { l: "Current", v: heroStats.rainNow.toFixed(1), u: "mm/h", i: CloudRain },
+                  { l: "Today", v: heroStats.rain24h.toFixed(0), u: "mm", i: Droplets },
+                  { l: "7 Day", v: heroStats.rain7d.toFixed(0), u: "mm", i: Calendar },
+                  { l: "Season", v: heroStats.seasonTotal.toLocaleString("en-IN"), u: "mm", i: Wind },
                 ].map((s) => (
                   <div key={s.l} className="rounded-xl border border-white/15 bg-white/5 backdrop-blur p-3">
                     <s.i className="h-4 w-4 text-aqua mb-2" />
@@ -773,6 +776,7 @@ export default function WaterPlatform() {
                   </div>
                 ))}
               </div>
+
             </div>
 
             <div className="glass-strong rounded-3xl p-8 lg:p-10">
