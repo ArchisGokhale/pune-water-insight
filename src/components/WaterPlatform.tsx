@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Droplets, CloudRain, Waves, Gauge, MapPin, TrendingUp, TrendingDown,
   AlertTriangle, Calculator, Sparkles, Radio, Sun, Moon, Activity,
@@ -9,9 +10,11 @@ import {
   BarChart, Bar, CartesianGrid, LineChart, Line,
 } from "recharts";
 import {
-  reservoirs, talukas, totalCapacity, totalCurrent, overallFill,
+  reservoirs, talukas as mockTalukas, totalCapacity, totalCurrent, overallFill,
   daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
 } from "@/lib/water-data";
+import { liveWeatherQuery } from "@/lib/weather-query";
+
 
 function useTheme() {
   const [dark, setDark] = useState(true);
@@ -469,11 +472,32 @@ function Calc() {
 }
 
 function ForecastChart() {
-  const data = Array.from({ length: 15 }, (_, i) => ({
-    day: `D${i + 1}`,
-    rainfall: Math.max(0, 35 + Math.sin(i * 0.7) * 28 + (i < 7 ? 10 : -5) + Math.random() * 15),
-    storage: 72 + i * 0.8 + Math.sin(i * 0.4) * 1.2,
-  }));
+  const { data: live } = useQuery(liveWeatherQuery);
+  const baseStorage = overallFill;
+  const data = useMemo(() => {
+    const fc = live?.forecast?.length ? live.forecast : null;
+    if (fc) {
+      // Estimate cumulative storage gain from forecasted rain over total catchment.
+      const totalCatchKm2 = 2300;
+      const runoff = 0.55;
+      let cum = baseStorage;
+      return fc.map((d, i) => {
+        const gainTMC = (d.rainfall / 1000) * totalCatchKm2 * 1_000_000 * runoff / 2.832e7;
+        cum = Math.min(100, cum + (gainTMC / totalCapacity) * 100 - 0.15); // minus daily draw
+        return {
+          day: `D${i + 1}`,
+          rainfall: d.rainfall,
+          storage: +cum.toFixed(1),
+        };
+      });
+    }
+    return Array.from({ length: 15 }, (_, i) => ({
+      day: `D${i + 1}`,
+      rainfall: Math.max(0, 35 + Math.sin(i * 0.7) * 28 + (i < 7 ? 10 : -5) + Math.random() * 15),
+      storage: 72 + i * 0.8 + Math.sin(i * 0.4) * 1.2,
+    }));
+  }, [live, baseStorage]);
+
   return (
     <div className="glass rounded-3xl p-6">
       <div className="mb-4 flex items-start justify-between">
@@ -483,7 +507,7 @@ function ForecastChart() {
           </div>
           <div>
             <h3 className="font-display text-xl font-bold">AI Forecast Engine</h3>
-            <p className="text-xs text-muted-foreground">Ensemble · IMD + OpenWeather + WeatherAPI · 15 day horizon</p>
+            <p className="text-xs text-muted-foreground">Ensemble · Open-Meteo · 15 day horizon {live?.source === "open-meteo" && <span className="ml-1 text-safe">● live</span>}</p>
           </div>
         </div>
         <div className="hidden md:flex gap-1 rounded-full bg-card/60 p-1 text-xs">
