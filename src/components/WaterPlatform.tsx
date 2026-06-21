@@ -169,7 +169,7 @@ function ReservoirFill({ pct, name, capacity, current }: { pct: number; name: st
   );
 }
 
-function TalukaCard({ t }: { t: typeof talukas[number] }) {
+function TalukaCard({ t }: { t: typeof mockTalukas[number] }) {
   const intensity = Math.min(t.rainNow / 15, 1);
   return (
     <button className="glass group relative overflow-hidden rounded-xl p-4 text-left transition hover:-translate-y-0.5 hover:glow">
@@ -696,10 +696,26 @@ function Sources() {
 
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
-  const monsoonProgress = 58; // % of season elapsed
-  const monsoonRain = 1242; // mm season so far
+  const { data: live } = useQuery(liveWeatherQuery);
+
+  // Merge live taluka data with mock baseline; live values take priority when present.
+  const talukas = useMemo(() => {
+    if (!live?.talukas?.length) return mockTalukas;
+    return mockTalukas.map((m) => {
+      const l = live.talukas.find((x) => x.name === m.name);
+      return l ? { ...m, ...l } : m;
+    });
+  }, [live]);
+
+  const heroStats = live?.districtAverages ?? {
+    rainNow: 4.2, rain24h: 38, rain7d: 142, seasonTotal: 1242, departure: 15,
+  };
+  const monsoonProgress = 58;
+  const monsoonRain = heroStats.seasonTotal;
   const monsoonNormal = 1080;
   const trend7d = +4.2;
+  const isLive = live?.source === "open-meteo";
+
 
   return (
     <div className="min-h-screen bg-background">
