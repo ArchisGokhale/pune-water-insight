@@ -1,14 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions } from "@tanstack/react-query";
 import WaterPlatform from "@/components/WaterPlatform";
-import { getLiveWeather } from "@/lib/weather.functions";
+import { liveWeatherQuery } from "@/lib/weather-query";
 
-export const liveWeatherQuery = queryOptions({
-  queryKey: ["live-weather"],
-  queryFn: () => getLiveWeather(),
-  staleTime: 5 * 60 * 1000, // 5 min
-  refetchInterval: 10 * 60 * 1000, // 10 min
-});
 
 export const Route = createFileRoute("/")({
   head: () => ({
