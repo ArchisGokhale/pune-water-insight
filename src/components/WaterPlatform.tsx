@@ -815,9 +815,10 @@ export default function WaterPlatform() {
       <section className="mx-auto max-w-[1400px] px-6 -mt-8 relative z-10">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC capacity`} trend={4.2} accent="aqua" />
-          <MetricCard icon={CloudRain} label="District Avg Rainfall" value="42" unit="mm/24h" sub="38% above LPA" trend={12.4} accent="monsoon" />
+          <MetricCard icon={CloudRain} label="District Avg Rainfall" value={heroStats.rain24h.toFixed(0)} unit="mm/24h" sub={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}% vs LPA`} trend={heroStats.departure} accent="monsoon" />
           <MetricCard icon={Gauge} label="Inflow Rate" value="82.2" unit="K cusec" sub="across all dams" trend={8.6} accent="safe" />
-          <MetricCard icon={Activity} label="Monsoon Departure" value="+15" unit="%" sub={`${monsoonRain} mm vs ${monsoonNormal} normal`} trend={2.1} accent="warn" />
+          <MetricCard icon={Activity} label="Monsoon Departure" value={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}`} unit="%" sub={`${monsoonRain} mm vs ${monsoonNormal} normal`} trend={2.1} accent="warn" />
+
         </div>
       </section>
 
