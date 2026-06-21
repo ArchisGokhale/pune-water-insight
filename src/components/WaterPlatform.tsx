@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Droplets, CloudRain, Waves, Gauge, MapPin, TrendingUp, TrendingDown,
   AlertTriangle, Calculator, Sparkles, Radio, Sun, Moon, Activity,
@@ -9,9 +10,11 @@ import {
   BarChart, Bar, CartesianGrid, LineChart, Line,
 } from "recharts";
 import {
-  reservoirs, talukas, totalCapacity, totalCurrent, overallFill,
+  reservoirs, talukas as mockTalukas, totalCapacity, totalCurrent, overallFill,
   daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
 } from "@/lib/water-data";
+import { liveWeatherQuery } from "@/lib/weather-query";
+
 
 function useTheme() {
   const [dark, setDark] = useState(true);
@@ -166,7 +169,7 @@ function ReservoirFill({ pct, name, capacity, current }: { pct: number; name: st
   );
 }
 
-function TalukaCard({ t }: { t: typeof talukas[number] }) {
+function TalukaCard({ t }: { t: typeof mockTalukas[number] }) {
   const intensity = Math.min(t.rainNow / 15, 1);
   return (
     <button className="glass group relative overflow-hidden rounded-xl p-4 text-left transition hover:-translate-y-0.5 hover:glow">
@@ -469,11 +472,32 @@ function Calc() {
 }
 
 function ForecastChart() {
-  const data = Array.from({ length: 15 }, (_, i) => ({
-    day: `D${i + 1}`,
-    rainfall: Math.max(0, 35 + Math.sin(i * 0.7) * 28 + (i < 7 ? 10 : -5) + Math.random() * 15),
-    storage: 72 + i * 0.8 + Math.sin(i * 0.4) * 1.2,
-  }));
+  const { data: live } = useQuery(liveWeatherQuery);
+  const baseStorage = overallFill;
+  const data = useMemo(() => {
+    const fc = live?.forecast?.length ? live.forecast : null;
+    if (fc) {
+      // Estimate cumulative storage gain from forecasted rain over total catchment.
+      const totalCatchKm2 = 2300;
+      const runoff = 0.55;
+      let cum = baseStorage;
+      return fc.map((d, i) => {
+        const gainTMC = (d.rainfall / 1000) * totalCatchKm2 * 1_000_000 * runoff / 2.832e7;
+        cum = Math.min(100, cum + (gainTMC / totalCapacity) * 100 - 0.15); // minus daily draw
+        return {
+          day: `D${i + 1}`,
+          rainfall: d.rainfall,
+          storage: +cum.toFixed(1),
+        };
+      });
+    }
+    return Array.from({ length: 15 }, (_, i) => ({
+      day: `D${i + 1}`,
+      rainfall: Math.max(0, 35 + Math.sin(i * 0.7) * 28 + (i < 7 ? 10 : -5) + Math.random() * 15),
+      storage: 72 + i * 0.8 + Math.sin(i * 0.4) * 1.2,
+    }));
+  }, [live, baseStorage]);
+
   return (
     <div className="glass rounded-3xl p-6">
       <div className="mb-4 flex items-start justify-between">
@@ -483,7 +507,7 @@ function ForecastChart() {
           </div>
           <div>
             <h3 className="font-display text-xl font-bold">AI Forecast Engine</h3>
-            <p className="text-xs text-muted-foreground">Ensemble · IMD + OpenWeather + WeatherAPI · 15 day horizon</p>
+            <p className="text-xs text-muted-foreground">Ensemble · Open-Meteo · 15 day horizon {live?.source === "open-meteo" && <span className="ml-1 text-safe">● live</span>}</p>
           </div>
         </div>
         <div className="hidden md:flex gap-1 rounded-full bg-card/60 p-1 text-xs">
@@ -672,10 +696,26 @@ function Sources() {
 
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
-  const monsoonProgress = 58; // % of season elapsed
-  const monsoonRain = 1242; // mm season so far
+  const { data: live } = useQuery(liveWeatherQuery);
+
+  // Merge live taluka data with mock baseline; live values take priority when present.
+  const talukas = useMemo(() => {
+    if (!live?.talukas?.length) return mockTalukas;
+    return mockTalukas.map((m) => {
+      const l = live.talukas.find((x) => x.name === m.name);
+      return l ? { ...m, ...l } : m;
+    });
+  }, [live]);
+
+  const heroStats = live?.districtAverages ?? {
+    rainNow: 4.2, rain24h: 38, rain7d: 142, seasonTotal: 1242, departure: 15,
+  };
+  const monsoonProgress = 58;
+  const monsoonRain = heroStats.seasonTotal;
   const monsoonNormal = 1080;
   const trend7d = +4.2;
+  const isLive = live?.source === "open-meteo";
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -700,9 +740,12 @@ export default function WaterPlatform() {
           <div className="grid lg:grid-cols-[1.4fr_1fr] gap-12 items-center">
             <div className="text-white">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-3 py-1 text-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-safe animate-pulse" />
-                <span className="font-mono uppercase tracking-wider text-white/80">Monsoon 2026 · Active</span>
+                <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isLive ? "bg-safe" : "bg-warn"}`} />
+                <span className="font-mono uppercase tracking-wider text-white/80">
+                  {isLive ? "Live · Open-Meteo · Monsoon Active" : "Monsoon Active · loading live feed"}
+                </span>
               </div>
+
               <h1 className="mt-6 font-display text-5xl lg:text-7xl font-bold leading-[0.95] tracking-tight">
                 Pune's water,<br />
                 <span className="text-gradient-aqua">in real time.</span>
@@ -721,10 +764,10 @@ export default function WaterPlatform() {
 
               <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  { l: "Current", v: "4.2", u: "mm/h", i: CloudRain },
-                  { l: "Today", v: "38", u: "mm", i: Droplets },
-                  { l: "7 Day", v: "142", u: "mm", i: Calendar },
-                  { l: "Season", v: "1,242", u: "mm", i: Wind },
+                  { l: "Current", v: heroStats.rainNow.toFixed(1), u: "mm/h", i: CloudRain },
+                  { l: "Today", v: heroStats.rain24h.toFixed(0), u: "mm", i: Droplets },
+                  { l: "7 Day", v: heroStats.rain7d.toFixed(0), u: "mm", i: Calendar },
+                  { l: "Season", v: heroStats.seasonTotal.toLocaleString("en-IN"), u: "mm", i: Wind },
                 ].map((s) => (
                   <div key={s.l} className="rounded-xl border border-white/15 bg-white/5 backdrop-blur p-3">
                     <s.i className="h-4 w-4 text-aqua mb-2" />
@@ -733,6 +776,7 @@ export default function WaterPlatform() {
                   </div>
                 ))}
               </div>
+
             </div>
 
             <div className="glass-strong rounded-3xl p-8 lg:p-10">
@@ -771,9 +815,10 @@ export default function WaterPlatform() {
       <section className="mx-auto max-w-[1400px] px-6 -mt-8 relative z-10">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
           <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC capacity`} trend={4.2} accent="aqua" />
-          <MetricCard icon={CloudRain} label="District Avg Rainfall" value="42" unit="mm/24h" sub="38% above LPA" trend={12.4} accent="monsoon" />
+          <MetricCard icon={CloudRain} label="District Avg Rainfall" value={heroStats.rain24h.toFixed(0)} unit="mm/24h" sub={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}% vs LPA`} trend={heroStats.departure} accent="monsoon" />
           <MetricCard icon={Gauge} label="Inflow Rate" value="82.2" unit="K cusec" sub="across all dams" trend={8.6} accent="safe" />
-          <MetricCard icon={Activity} label="Monsoon Departure" value="+15" unit="%" sub={`${monsoonRain} mm vs ${monsoonNormal} normal`} trend={2.1} accent="warn" />
+          <MetricCard icon={Activity} label="Monsoon Departure" value={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}`} unit="%" sub={`${monsoonRain} mm vs ${monsoonNormal} normal`} trend={2.1} accent="warn" />
+
         </div>
       </section>
 
