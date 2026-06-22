@@ -802,13 +802,22 @@ export default function WaterPlatform() {
   }, [live]);
 
   const heroStats = live?.districtAverages ?? {
-    rainNow: 4.2, rain24h: 38, rain7d: 142, seasonTotal: 1242, departure: 15,
+    rainNow: 0.3,
+    rain24h: Math.round(mockTalukas.reduce((s, t) => s + t.rain24h, 0) / mockTalukas.length),
+    rain7d: Math.round(mockTalukas.reduce((s, t) => s + t.rain7d, 0) / mockTalukas.length),
+    seasonTotal: districtSeasonRain,
+    departure: districtRainDeparture,
   };
-  const monsoonProgress = 58;
   const monsoonRain = heroStats.seasonTotal;
-  const monsoonNormal = 1080;
-  const trend7d = +4.2;
+  const monsoonNormal = districtSeasonLPA;
+  const trend7d = wowStorageDelta;
   const isLive = live?.source === "open-meteo";
+  const securityColor = securityIndex >= 75 ? "safe" : securityIndex >= 55 ? "aqua" : securityIndex >= 35 ? "warn" : "danger";
+  const totalInflow = reservoirs.reduce((s, r) => s + r.inflowCusec, 0);
+  const totalOutflow = reservoirs.reduce((s, r) => s + r.outflowCusec, 0);
+  const avgCatchmentRain = +(reservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / reservoirs.length).toFixed(1);
+  // Net storage Δ ≈ (inflow - outflow) cusec → TMC/day. 1 cusec ≈ 2.446e-6 TMC/day
+  const netStorageDelta = +(((totalInflow - totalOutflow) * 0.0864) / 28316.85).toFixed(2);
 
 
   return (
