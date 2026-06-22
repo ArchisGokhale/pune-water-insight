@@ -950,10 +950,10 @@ export default function WaterPlatform() {
 
         <div className="glass mt-4 grid grid-cols-1 md:grid-cols-4 gap-px rounded-2xl overflow-hidden">
           {[
-            { l: "Total Inflow", v: "82,170", u: "cusec", c: "safe" },
-            { l: "Total Outflow", v: "8,700", u: "cusec", c: "warn" },
-            { l: "Net Storage Δ", v: "+0.84", u: "TMC/day", c: "aqua" },
-            { l: "Catchment Rain", v: "60.1", u: "mm avg", c: "monsoon" },
+            { l: "Total Inflow", v: totalInflow.toLocaleString("en-IN"), u: "cusec", c: totalInflow > 0 ? "safe" : "warn" },
+            { l: "Total Outflow", v: totalOutflow.toLocaleString("en-IN"), u: "cusec", c: "warn" },
+            { l: "Net Storage Δ", v: `${netStorageDelta > 0 ? "+" : ""}${netStorageDelta}`, u: "TMC/day", c: netStorageDelta >= 0 ? "aqua" : "warn" },
+            { l: "Catchment Rain", v: avgCatchmentRain.toString(), u: "mm avg/24h", c: "monsoon" },
           ].map((s) => (
             <div key={s.l} className="bg-card/40 p-5">
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
