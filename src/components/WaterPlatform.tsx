@@ -42,6 +42,15 @@ function Logo() {
 
 function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
   const items = ["Overview", "Live Map", "Reservoirs", "Forecast", "Analytics", "Alerts"];
+  const { data: live } = useQuery(liveWeatherQuery);
+  const [now, setNow] = useState<string>("");
+  useEffect(() => {
+    const fmt = () => new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
+    setNow(fmt());
+    const id = setInterval(() => setNow(fmt()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+  const isLive = live?.source === "open-meteo";
   return (
     <header className="sticky top-0 z-50 glass-strong border-b">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-3">
@@ -55,12 +64,12 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-1.5 rounded-full bg-safe/15 px-3 py-1.5 text-xs font-medium text-safe">
+          <div className={`hidden md:flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium ${isLive ? "bg-safe/15 text-safe" : "bg-muted/40 text-muted-foreground"}`}>
             <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-safe opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-safe" />
+              {isLive && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-safe opacity-75" />}
+              <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${isLive ? "bg-safe" : "bg-muted-foreground"}`} />
             </span>
-            Live · 14:32 IST
+            {isLive ? "Live" : "Cached"} · {now} IST
           </div>
           <button onClick={toggle} className="rounded-full border border-border bg-card/60 p-2 hover:bg-accent transition-colors">
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
