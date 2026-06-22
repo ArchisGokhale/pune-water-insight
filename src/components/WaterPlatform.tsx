@@ -906,7 +906,7 @@ export default function WaterPlatform() {
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Monsoon</div>
-                  <div className="font-display text-2xl font-bold text-safe tabular-nums">{monsoonProgress}%</div>
+                  <div className={`font-display text-2xl font-bold tabular-nums ${monsoonProgress < 25 ? "text-warn" : "text-safe"}`}>{monsoonProgress}%</div>
                 </div>
               </div>
             </div>
