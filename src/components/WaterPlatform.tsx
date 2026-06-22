@@ -845,7 +845,7 @@ export default function WaterPlatform() {
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-3 py-1 text-xs">
                 <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isLive ? "bg-safe" : "bg-warn"}`} />
                 <span className="font-mono uppercase tracking-wider text-white/80">
-                  {isLive ? "Live · Open-Meteo · Monsoon Active" : "Monsoon Active · loading live feed"}
+                  {isLive ? "Live · Open-Meteo" : "Cached feed"} · Monsoon {monsoonProgress}% · Rainfall {districtRainDeparture > 0 ? "+" : ""}{districtRainDeparture}% LPA
                 </span>
               </div>
 
@@ -854,7 +854,7 @@ export default function WaterPlatform() {
                 <span className="text-gradient-aqua">in real time.</span>
               </h1>
               <p className="mt-5 max-w-xl text-base lg:text-lg text-white/70 leading-relaxed">
-                A unified intelligence platform tracking rainfall across 13 talukas, storage in 7 major reservoirs, and projecting water security for 8+ million people.
+                A unified intelligence platform tracking rainfall across 13 talukas, storage in {reservoirs.length} major reservoirs ({totalCapacity.toFixed(1)} TMC capacity), and projecting water security for Pune's 8+ million people.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#live-map" className="rounded-xl bg-aqua px-5 py-3 text-sm font-semibold text-storm hover:opacity-90 transition flex items-center gap-2">
