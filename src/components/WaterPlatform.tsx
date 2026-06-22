@@ -888,7 +888,12 @@ export default function WaterPlatform() {
                   <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">Pune Water Security</div>
                   <div className="font-display text-2xl font-bold mt-0.5">District Outlook</div>
                 </div>
-                <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold bg-${securityColor}/15 text-${securityColor}`}>
+                <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                  securityColor === "safe" ? "bg-safe/15 text-safe" :
+                  securityColor === "aqua" ? "bg-aqua/15 text-aqua" :
+                  securityColor === "warn" ? "bg-warn/15 text-warn" :
+                  "bg-danger/15 text-danger"
+                }`}>
                   {trend7d >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />} {securityLabel} · {trend7d > 0 ? "+" : ""}{trend7d}% / wk
                 </div>
               </div>
