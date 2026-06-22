@@ -14,6 +14,7 @@ import {
   daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
+import { liveNewsQuery } from "@/lib/news-query";
 
 
 function useTheme() {
@@ -694,6 +695,88 @@ function Sources() {
   );
 }
 
+function LiveNews() {
+  const { data, isLoading, refetch, isFetching } = useQuery(liveNewsQuery);
+  const items = data?.items ?? [];
+  const isLive = data?.source === "firecrawl" && items.length > 0;
+  const catColor: Record<string, string> = {
+    alert: "var(--danger)",
+    reservoir: "var(--aqua)",
+    supply: "var(--warn)",
+    rainfall: "var(--monsoon)",
+    general: "var(--muted-foreground)",
+  };
+  return (
+    <div className="glass rounded-3xl p-6">
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-aqua/15 text-aqua">
+            <Radio className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="font-display text-xl font-bold flex items-center gap-2">
+              News & Advisories
+              {isLive && <span className="text-[10px] font-mono uppercase tracking-wider text-safe">● live</span>}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              {data?.fetchedAt ? `Updated ${new Date(data.fetchedAt).toLocaleTimeString()}` : "Loading…"}
+              {data?.source === "fallback" && " · using fallback"}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="rounded-lg border border-border bg-card/60 px-3 py-1.5 text-xs font-medium hover:bg-card disabled:opacity-50"
+        >
+          {isFetching ? "Refreshing…" : "Refresh"}
+        </button>
+      </div>
+
+      {isLoading && (
+        <div className="grid gap-3">
+          {[1,2,3,4].map(i => <div key={i} className="h-20 rounded-xl bg-card/40 animate-pulse" />)}
+        </div>
+      )}
+
+      {!isLoading && items.length === 0 && (
+        <div className="rounded-xl border border-border/60 bg-card/40 p-8 text-center text-sm text-muted-foreground">
+          No live coverage available right now. {data?.error && <span className="block mt-2 font-mono text-[10px]">{data.error}</span>}
+        </div>
+      )}
+
+      {items.length > 0 && (
+        <div className="grid gap-3 md:grid-cols-2">
+          {items.map((n) => {
+            const c = catColor[n.category] ?? "var(--muted-foreground)";
+            return (
+              <a
+                key={n.url}
+                href={n.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative flex flex-col gap-2 rounded-xl border border-border/60 bg-card/40 p-4 hover:bg-card/70 hover:border-aqua/40 transition"
+              >
+                <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider">
+                  <span className="rounded px-1.5 py-0.5 font-mono font-semibold" style={{ background: `color-mix(in oklab, ${c} 15%, transparent)`, color: c }}>
+                    {n.category}
+                  </span>
+                  <span className="text-muted-foreground truncate">{n.source}</span>
+                  {n.publishedAt && <span className="ml-auto text-muted-foreground">{new Date(n.publishedAt).toLocaleDateString()}</span>}
+                </div>
+                <div className="text-sm font-semibold leading-snug group-hover:text-aqua transition line-clamp-2">{n.title}</div>
+                {n.snippet && <p className="text-xs text-muted-foreground line-clamp-2">{n.snippet}</p>}
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
   const { data: live } = useQuery(liveWeatherQuery);
@@ -876,6 +959,12 @@ export default function WaterPlatform() {
       <section id="alerts" className="mx-auto max-w-[1400px] px-6 mt-20 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
         <EventsTimeline />
         <Insights />
+      </section>
+
+      {/* Live News */}
+      <section id="news" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="Live News" title="Today's Pune Water Coverage" desc="Aggregated last-24h coverage on rainfall, reservoirs, supply cuts and IMD warnings." />
+        <LiveNews />
       </section>
 
       <Sources />
