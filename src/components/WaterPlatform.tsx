@@ -14,6 +14,7 @@ import {
   daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
+import { liveNewsQuery } from "@/lib/news-query";
 
 
 function useTheme() {
@@ -876,6 +877,12 @@ export default function WaterPlatform() {
       <section id="alerts" className="mx-auto max-w-[1400px] px-6 mt-20 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
         <EventsTimeline />
         <Insights />
+      </section>
+
+      {/* Live News */}
+      <section id="news" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="Live News" title="Today's Pune Water Coverage" desc="Aggregated last-24h coverage on rainfall, reservoirs, supply cuts and IMD warnings." />
+        <LiveNews />
       </section>
 
       <Sources />
