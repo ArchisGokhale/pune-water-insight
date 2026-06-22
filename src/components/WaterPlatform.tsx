@@ -941,7 +941,7 @@ export default function WaterPlatform() {
 
       {/* Reservoirs */}
       <section id="reservoirs" className="mx-auto max-w-[1400px] px-6 mt-20">
-        <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc="Aggregate capacity 62.71 TMC across 7 major dams supplying Pune Metropolitan Region." />
+        <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc={`Aggregate capacity ${totalCapacity.toFixed(1)} TMC across ${reservoirs.length} major dams supplying Pune Metropolitan Region.`} />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {reservoirs.map((r) => (
             <ReservoirFill key={r.id} name={r.name} pct={(r.currentTMC / r.capacityTMC) * 100} capacity={r.capacityTMC} current={r.currentTMC} />
