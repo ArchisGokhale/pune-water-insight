@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import WaterPlatform from "@/components/WaterPlatform";
 import { liveWeatherQuery } from "@/lib/weather-query";
+import { liveNewsQuery } from "@/lib/news-query";
 
 
 export const Route = createFileRoute("/")({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/")({
   }),
   loader: ({ context }) => {
     context.queryClient.prefetchQuery(liveWeatherQuery);
+    context.queryClient.prefetchQuery(liveNewsQuery);
   },
   component: () => <WaterPlatform />,
 });
