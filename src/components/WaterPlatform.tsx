@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import {
   reservoirs, talukas as mockTalukas, totalCapacity, totalCurrent, overallFill,
-  daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
+  daysAvailable, securityIndex, securityLabel, events, aiInsights, dailyDemandTMC,
+  monsoonProgress, districtSeasonRain, districtSeasonLPA, districtRainDeparture,
+  wowStorageDelta, yoyDeltaPct,
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
@@ -800,13 +802,22 @@ export default function WaterPlatform() {
   }, [live]);
 
   const heroStats = live?.districtAverages ?? {
-    rainNow: 4.2, rain24h: 38, rain7d: 142, seasonTotal: 1242, departure: 15,
+    rainNow: 0.3,
+    rain24h: Math.round(mockTalukas.reduce((s, t) => s + t.rain24h, 0) / mockTalukas.length),
+    rain7d: Math.round(mockTalukas.reduce((s, t) => s + t.rain7d, 0) / mockTalukas.length),
+    seasonTotal: districtSeasonRain,
+    departure: districtRainDeparture,
   };
-  const monsoonProgress = 58;
   const monsoonRain = heroStats.seasonTotal;
-  const monsoonNormal = 1080;
-  const trend7d = +4.2;
+  const monsoonNormal = districtSeasonLPA;
+  const trend7d = wowStorageDelta;
   const isLive = live?.source === "open-meteo";
+  const securityColor = securityIndex >= 75 ? "safe" : securityIndex >= 55 ? "aqua" : securityIndex >= 35 ? "warn" : "danger";
+  const totalInflow = reservoirs.reduce((s, r) => s + r.inflowCusec, 0);
+  const totalOutflow = reservoirs.reduce((s, r) => s + r.outflowCusec, 0);
+  const avgCatchmentRain = +(reservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / reservoirs.length).toFixed(1);
+  // Net storage Δ ≈ (inflow - outflow) cusec → TMC/day. 1 cusec ≈ 2.446e-6 TMC/day
+  const netStorageDelta = +(((totalInflow - totalOutflow) * 0.0864) / 28316.85).toFixed(2);
 
 
   return (
@@ -834,7 +845,7 @@ export default function WaterPlatform() {
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-3 py-1 text-xs">
                 <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isLive ? "bg-safe" : "bg-warn"}`} />
                 <span className="font-mono uppercase tracking-wider text-white/80">
-                  {isLive ? "Live · Open-Meteo · Monsoon Active" : "Monsoon Active · loading live feed"}
+                  {isLive ? "Live · Open-Meteo" : "Cached feed"} · Monsoon {monsoonProgress}% · Rainfall {districtRainDeparture > 0 ? "+" : ""}{districtRainDeparture}% LPA
                 </span>
               </div>
 
@@ -843,7 +854,7 @@ export default function WaterPlatform() {
                 <span className="text-gradient-aqua">in real time.</span>
               </h1>
               <p className="mt-5 max-w-xl text-base lg:text-lg text-white/70 leading-relaxed">
-                A unified intelligence platform tracking rainfall across 13 talukas, storage in 7 major reservoirs, and projecting water security for 8+ million people.
+                A unified intelligence platform tracking rainfall across 13 talukas, storage in {reservoirs.length} major reservoirs ({totalCapacity.toFixed(1)} TMC capacity), and projecting water security for Pune's 8+ million people.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#live-map" className="rounded-xl bg-aqua px-5 py-3 text-sm font-semibold text-storm hover:opacity-90 transition flex items-center gap-2">
@@ -877,8 +888,13 @@ export default function WaterPlatform() {
                   <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-semibold">Pune Water Security</div>
                   <div className="font-display text-2xl font-bold mt-0.5">District Outlook</div>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-full bg-safe/15 px-2.5 py-1 text-[11px] font-semibold text-safe">
-                  <TrendingUp className="h-3 w-3" /> +{trend7d}% / wk
+                <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+                  securityColor === "safe" ? "bg-safe/15 text-safe" :
+                  securityColor === "aqua" ? "bg-aqua/15 text-aqua" :
+                  securityColor === "warn" ? "bg-warn/15 text-warn" :
+                  "bg-danger/15 text-danger"
+                }`}>
+                  {trend7d >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />} {securityLabel} · {trend7d > 0 ? "+" : ""}{trend7d}% / wk
                 </div>
               </div>
               <div className="flex justify-center">
@@ -895,7 +911,7 @@ export default function WaterPlatform() {
                 </div>
                 <div>
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Monsoon</div>
-                  <div className="font-display text-2xl font-bold text-safe tabular-nums">{monsoonProgress}%</div>
+                  <div className={`font-display text-2xl font-bold tabular-nums ${monsoonProgress < 25 ? "text-warn" : "text-safe"}`}>{monsoonProgress}%</div>
                 </div>
               </div>
             </div>
@@ -906,10 +922,10 @@ export default function WaterPlatform() {
       {/* KPI strip */}
       <section className="mx-auto max-w-[1400px] px-6 -mt-8 relative z-10">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC capacity`} trend={4.2} accent="aqua" />
+          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC · ${overallFill.toFixed(1)}% full`} trend={trend7d} accent="aqua" />
           <MetricCard icon={CloudRain} label="District Avg Rainfall" value={heroStats.rain24h.toFixed(0)} unit="mm/24h" sub={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}% vs LPA`} trend={heroStats.departure} accent="monsoon" />
-          <MetricCard icon={Gauge} label="Inflow Rate" value="82.2" unit="K cusec" sub="across all dams" trend={8.6} accent="safe" />
-          <MetricCard icon={Activity} label="Monsoon Departure" value={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}`} unit="%" sub={`${monsoonRain} mm vs ${monsoonNormal} normal`} trend={2.1} accent="warn" />
+          <MetricCard icon={Gauge} label="YoY Storage" value={`${yoyDeltaPct > 0 ? "+" : ""}${yoyDeltaPct}`} unit="%" sub={`vs same day last year`} trend={yoyDeltaPct} accent={yoyDeltaPct >= 0 ? "safe" : "warn"} />
+          <MetricCard icon={Activity} label="Season Rainfall" value={`${monsoonRain}`} unit="mm" sub={`${monsoonNormal} mm normal-to-date · ${districtRainDeparture > 0 ? "+" : ""}${districtRainDeparture}%`} trend={districtRainDeparture} accent="warn" />
 
         </div>
       </section>
@@ -930,7 +946,7 @@ export default function WaterPlatform() {
 
       {/* Reservoirs */}
       <section id="reservoirs" className="mx-auto max-w-[1400px] px-6 mt-20">
-        <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc="Aggregate capacity 62.71 TMC across 7 major dams supplying Pune Metropolitan Region." />
+        <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc={`Aggregate capacity ${totalCapacity.toFixed(1)} TMC across ${reservoirs.length} major dams supplying Pune Metropolitan Region.`} />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {reservoirs.map((r) => (
             <ReservoirFill key={r.id} name={r.name} pct={(r.currentTMC / r.capacityTMC) * 100} capacity={r.capacityTMC} current={r.currentTMC} />
@@ -939,10 +955,10 @@ export default function WaterPlatform() {
 
         <div className="glass mt-4 grid grid-cols-1 md:grid-cols-4 gap-px rounded-2xl overflow-hidden">
           {[
-            { l: "Total Inflow", v: "82,170", u: "cusec", c: "safe" },
-            { l: "Total Outflow", v: "8,700", u: "cusec", c: "warn" },
-            { l: "Net Storage Δ", v: "+0.84", u: "TMC/day", c: "aqua" },
-            { l: "Catchment Rain", v: "60.1", u: "mm avg", c: "monsoon" },
+            { l: "Total Inflow", v: totalInflow.toLocaleString("en-IN"), u: "cusec", c: totalInflow > 0 ? "safe" : "warn" },
+            { l: "Total Outflow", v: totalOutflow.toLocaleString("en-IN"), u: "cusec", c: "warn" },
+            { l: "Net Storage Δ", v: `${netStorageDelta > 0 ? "+" : ""}${netStorageDelta}`, u: "TMC/day", c: netStorageDelta >= 0 ? "aqua" : "warn" },
+            { l: "Catchment Rain", v: avgCatchmentRain.toString(), u: "mm avg/24h", c: "monsoon" },
           ].map((s) => (
             <div key={s.l} className="bg-card/40 p-5">
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
