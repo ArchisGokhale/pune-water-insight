@@ -49,7 +49,7 @@ export const getLiveNews = createServerFn({ method: "GET" }).handler(
       const firecrawl = new Firecrawl({ apiKey });
       const results = await Promise.allSettled(
         QUERIES.map((q) =>
-          firecrawl.search(q.q, { limit: 5, tbs: "qdr:d", lang: "en", country: "in" })
+          firecrawl.search(q.q, { limit: 5, tbs: "qdr:d" } as any)
         )
       );
 
