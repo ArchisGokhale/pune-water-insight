@@ -773,6 +773,9 @@ function LiveNews() {
       )}
     </div>
   );
+}
+
+
 
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
