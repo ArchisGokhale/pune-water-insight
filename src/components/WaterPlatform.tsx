@@ -11,7 +11,9 @@ import {
 } from "recharts";
 import {
   reservoirs, talukas as mockTalukas, totalCapacity, totalCurrent, overallFill,
-  daysAvailable, securityIndex, events, aiInsights, dailyDemandTMC,
+  daysAvailable, securityIndex, securityLabel, events, aiInsights, dailyDemandTMC,
+  monsoonProgress, districtSeasonRain, districtSeasonLPA, districtRainDeparture,
+  wowStorageDelta, yoyDeltaPct,
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
