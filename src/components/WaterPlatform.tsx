@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import {
   Droplets, CloudRain, Waves, Gauge, MapPin, TrendingUp, TrendingDown,
   AlertTriangle, Calculator, Sparkles, Radio, Sun, Moon, Activity,
@@ -18,6 +19,9 @@ import {
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
+import PersonalCalc from "./PersonalCalc";
+import ReservoirMap from "./ReservoirMap";
+import AssistantLauncher from "./AssistantChat";
 
 
 function useTheme() {
@@ -106,7 +110,15 @@ function AuthorFooter() {
 
 
 function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
-  const items = ["Overview", "Live Map", "Reservoirs", "Forecast", "Analytics", "Alerts"];
+  const items: { label: string; href: string; external?: boolean }[] = [
+    { label: "Overview", href: "#overview" },
+    { label: "Map", href: "#map" },
+    { label: "Reservoirs", href: "#reservoirs" },
+    { label: "My Use", href: "#my-use" },
+    { label: "Wards", href: "/wards", external: true },
+    { label: "Forecast", href: "#forecast" },
+    { label: "Alerts", href: "#alerts" },
+  ];
   const { data: live } = useQuery(liveWeatherQuery);
   const [now, setNow] = useState<string>("");
   useEffect(() => {
@@ -121,10 +133,15 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-3">
         <Logo />
         <nav className="hidden lg:flex items-center gap-1 rounded-full border border-border/60 bg-card/50 px-2 py-1">
-          {items.map((it, i) => (
-            <a key={it} href={`#${it.toLowerCase().replace(" ", "-")}`}
+          {items.map((it, i) => it.external ? (
+            <Link key={it.label} to={it.href}
+              className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+              {it.label}
+            </Link>
+          ) : (
+            <a key={it.label} href={it.href}
                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${i === 0 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              {it}
+              {it.label}
             </a>
           ))}
         </nav>
@@ -893,13 +910,14 @@ export default function WaterPlatform() {
       <section id="overview" className="relative overflow-hidden">
         <div className="absolute inset-0 grad-hero opacity-90" />
         <div className="absolute inset-0 grid-bg opacity-50" />
-        <div className="absolute inset-x-0 top-0 h-full overflow-hidden pointer-events-none">
+        <div className="absolute inset-x-0 top-0 h-full overflow-hidden pointer-events-none" suppressHydrationWarning>
           {Array.from({ length: 40 }).map((_, i) => (
             <span key={i} className="absolute top-0 w-px bg-aqua/30"
+              suppressHydrationWarning
               style={{
                 left: `${(i * 2.5) % 100}%`,
-                height: `${20 + Math.random() * 40}px`,
-                animation: `rain-fall ${1.2 + Math.random() * 1.5}s linear ${Math.random() * 2}s infinite`,
+                height: `${20 + ((i * 37) % 40)}px`,
+                animation: `rain-fall ${1.2 + ((i * 13) % 15) / 10}s linear ${((i * 7) % 20) / 10}s infinite`,
               }} />
           ))}
         </div>
@@ -995,10 +1013,15 @@ export default function WaterPlatform() {
         </div>
       </section>
 
-      {/* Live Map */}
+      {/* Live Map (stylised) + Interactive Leaflet map */}
       <section id="live-map" className="mx-auto max-w-[1400px] px-6 mt-16">
         <SectionHeader eyebrow="GIS Intelligence" title="Live District Map" desc="Interactive multi-layer view of rainfall, reservoirs, rivers and weather radar across Pune district." />
         <PuneMap />
+      </section>
+
+      <section id="map" className="mx-auto max-w-[1400px] px-6 mt-16">
+        <SectionHeader eyebrow="Reservoir Map" title="Interactive Reservoir Network" desc="Real coordinates · live storage colour-coded · click a marker for inflow, outflow and catchment rainfall." />
+        <ReservoirMap />
       </section>
 
       {/* Talukas */}
@@ -1033,6 +1056,26 @@ export default function WaterPlatform() {
         </div>
       </section>
 
+      {/* Personal water calculator */}
+      <section id="my-use" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="For You" title="Your Personal Water Footprint" desc="Estimate your household's daily water use and compare it against Pune's average — based on CPHEEO + BIS norms." />
+        <PersonalCalc />
+      </section>
+
+      {/* Wards CTA */}
+      <section className="mx-auto max-w-[1400px] px-6 mt-16">
+        <Link to="/wards" className="glass group flex flex-col items-start gap-3 rounded-3xl p-6 md:flex-row md:items-center md:justify-between md:p-8 hover:border-aqua/40 transition">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-aqua font-semibold">Ward Schedule</div>
+            <h3 className="mt-1 font-display text-2xl font-bold">When does your area get water?</h3>
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Search all PMC + PCMC wards for live alternate-day supply timings, feeder reservoirs and tail-end notes.</p>
+          </div>
+          <span className="rounded-xl bg-aqua px-5 py-3 text-sm font-semibold text-storm group-hover:opacity-90 transition flex items-center gap-2">
+            Open ward directory <ChevronRight className="h-4 w-4" />
+          </span>
+        </Link>
+      </section>
+
       {/* Calculator + Forecast */}
       <section id="forecast" className="mx-auto max-w-[1400px] px-6 mt-20 grid gap-5 lg:grid-cols-[1.1fr_1fr]">
         <Calc />
@@ -1058,6 +1101,7 @@ export default function WaterPlatform() {
       </section>
 
       <Sources />
+      <AssistantLauncher />
     </div>
   );
 }
