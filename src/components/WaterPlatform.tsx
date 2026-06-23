@@ -910,13 +910,14 @@ export default function WaterPlatform() {
       <section id="overview" className="relative overflow-hidden">
         <div className="absolute inset-0 grad-hero opacity-90" />
         <div className="absolute inset-0 grid-bg opacity-50" />
-        <div className="absolute inset-x-0 top-0 h-full overflow-hidden pointer-events-none">
+        <div className="absolute inset-x-0 top-0 h-full overflow-hidden pointer-events-none" suppressHydrationWarning>
           {Array.from({ length: 40 }).map((_, i) => (
             <span key={i} className="absolute top-0 w-px bg-aqua/30"
+              suppressHydrationWarning
               style={{
                 left: `${(i * 2.5) % 100}%`,
-                height: `${20 + Math.random() * 40}px`,
-                animation: `rain-fall ${1.2 + Math.random() * 1.5}s linear ${Math.random() * 2}s infinite`,
+                height: `${20 + ((i * 37) % 40)}px`,
+                animation: `rain-fall ${1.2 + ((i * 13) % 15) / 10}s linear ${((i * 7) % 20) / 10}s infinite`,
               }} />
           ))}
         </div>
