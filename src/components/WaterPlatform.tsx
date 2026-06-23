@@ -761,6 +761,7 @@ function Sources() {
             <span key={s} className="rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs font-medium text-muted-foreground">{s}</span>
           ))}
         </div>
+        <AuthorFooter />
         <div className="mt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-muted-foreground">
           <div>© 2026 Pune Water Intelligence Platform · A public information service</div>
           <div className="font-mono">v1.2.0 · API status: <span className="text-safe">●</span> operational</div>
