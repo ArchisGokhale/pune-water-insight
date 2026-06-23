@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import {
   Droplets, CloudRain, Waves, Gauge, MapPin, TrendingUp, TrendingDown,
   AlertTriangle, Calculator, Sparkles, Radio, Sun, Moon, Activity,
@@ -18,6 +19,9 @@ import {
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
+import PersonalCalc from "./PersonalCalc";
+import ReservoirMap from "./ReservoirMap";
+import AssistantLauncher from "./AssistantChat";
 
 
 function useTheme() {
