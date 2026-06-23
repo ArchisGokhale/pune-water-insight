@@ -4,6 +4,7 @@ import {
   Droplets, CloudRain, Waves, Gauge, MapPin, TrendingUp, TrendingDown,
   AlertTriangle, Calculator, Sparkles, Radio, Sun, Moon, Activity,
   Layers, Wind, Calendar, ChevronRight, Database, Satellite,
+  Github, Linkedin, Mail, Instagram, Globe,
 } from "lucide-react";
 import {
   AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip,
