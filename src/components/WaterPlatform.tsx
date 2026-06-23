@@ -763,7 +763,7 @@ function Sources() {
         </div>
         <AuthorFooter />
         <div className="mt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div>© 2026 Pune Water Intelligence Platform · A public information service</div>
+          <div>© 2026 Pune Water Intelligence · Built by <a href={AUTHOR.site} target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-aqua transition-colors">Archis Gokhale</a></div>
           <div className="font-mono">v1.2.0 · API status: <span className="text-safe">●</span> operational</div>
         </div>
       </div>
