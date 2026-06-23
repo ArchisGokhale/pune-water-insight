@@ -43,6 +43,68 @@ function Logo() {
   );
 }
 
+const AUTHOR = {
+  name: "Archis Gokhale",
+  site: "https://archisgokhale.codes",
+  linkedin: "https://www.linkedin.com/in/archis-gokhale-423a71218/",
+  github: "https://github.com/ArchisGokhale",
+  email: "archisgokhale001@gmail.com",
+  instagram: "https://www.instagram.com/archisuploads/",
+};
+
+function AuthorBadge() {
+  return (
+    <a
+      href={AUTHOR.site}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hidden md:flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-aqua/40 transition-colors"
+      title={`Built by ${AUTHOR.name}`}
+    >
+      <span className="grad-aqua flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white">AG</span>
+      <span className="tracking-tight">by <span className="text-foreground">{AUTHOR.name}</span></span>
+    </a>
+  );
+}
+
+function AuthorFooter() {
+  const links = [
+    { href: AUTHOR.site, icon: Globe, label: "archisgokhale.codes" },
+    { href: AUTHOR.linkedin, icon: Linkedin, label: "LinkedIn" },
+    { href: AUTHOR.github, icon: Github, label: "GitHub" },
+    { href: AUTHOR.instagram, icon: Instagram, label: "Instagram" },
+    { href: `mailto:${AUTHOR.email}`, icon: Mail, label: AUTHOR.email },
+  ];
+  return (
+    <div className="mt-6 rounded-2xl border border-border/60 bg-card/40 p-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="grad-aqua flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold text-white">AG</div>
+          <div className="leading-tight">
+            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Designed & built by</div>
+            <div className="font-display text-base font-bold tracking-tight">{AUTHOR.name}</div>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {links.map(({ href, icon: Icon, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-aqua/50 transition-colors"
+            >
+              <Icon className="h-3.5 w-3.5" />
+              <span>{label}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
   const items = ["Overview", "Live Map", "Reservoirs", "Forecast", "Analytics", "Alerts"];
   const { data: live } = useQuery(liveWeatherQuery);
