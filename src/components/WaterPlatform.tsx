@@ -110,7 +110,15 @@ function AuthorFooter() {
 
 
 function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
-  const items = ["Overview", "Live Map", "Reservoirs", "Forecast", "Analytics", "Alerts"];
+  const items: { label: string; href: string; external?: boolean }[] = [
+    { label: "Overview", href: "#overview" },
+    { label: "Map", href: "#map" },
+    { label: "Reservoirs", href: "#reservoirs" },
+    { label: "My Use", href: "#my-use" },
+    { label: "Wards", href: "/wards", external: true },
+    { label: "Forecast", href: "#forecast" },
+    { label: "Alerts", href: "#alerts" },
+  ];
   const { data: live } = useQuery(liveWeatherQuery);
   const [now, setNow] = useState<string>("");
   useEffect(() => {
@@ -125,10 +133,15 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-3">
         <Logo />
         <nav className="hidden lg:flex items-center gap-1 rounded-full border border-border/60 bg-card/50 px-2 py-1">
-          {items.map((it, i) => (
-            <a key={it} href={`#${it.toLowerCase().replace(" ", "-")}`}
+          {items.map((it, i) => it.external ? (
+            <Link key={it.label} to={it.href}
+              className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">
+              {it.label}
+            </Link>
+          ) : (
+            <a key={it.label} href={it.href}
                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${i === 0 ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              {it}
+              {it.label}
             </a>
           ))}
         </nav>
