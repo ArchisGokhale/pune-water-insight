@@ -1101,6 +1101,7 @@ export default function WaterPlatform() {
       </section>
 
       <Sources />
+      <AssistantLauncher />
     </div>
   );
 }
