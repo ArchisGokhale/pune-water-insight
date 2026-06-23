@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Pune Water Insights Live" },
       { name: "description", content: "Pune Water Insights Live is a real-time water intelligence platform that transforms rainfall data into actionable reservoir and water security insights for Pune" },
-      { name: "author", content: "Lovable" },
+      { name: "author", content: "Archis Gokhale" },
       { property: "og:title", content: "Pune Water Insights Live" },
       { property: "og:description", content: "Pune Water Insights Live is a real-time water intelligence platform that transforms rainfall data into actionable reservoir and water security insights for Pune" },
       { property: "og:type", content: "website" },
