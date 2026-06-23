@@ -129,6 +129,7 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <AuthorBadge />
           <div className={`hidden md:flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium ${isLive ? "bg-safe/15 text-safe" : "bg-muted/40 text-muted-foreground"}`}>
             <span className="relative flex h-1.5 w-1.5">
               {isLive && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-safe opacity-75" />}
