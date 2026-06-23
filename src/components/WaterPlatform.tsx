@@ -1013,10 +1013,15 @@ export default function WaterPlatform() {
         </div>
       </section>
 
-      {/* Live Map */}
+      {/* Live Map (stylised) + Interactive Leaflet map */}
       <section id="live-map" className="mx-auto max-w-[1400px] px-6 mt-16">
         <SectionHeader eyebrow="GIS Intelligence" title="Live District Map" desc="Interactive multi-layer view of rainfall, reservoirs, rivers and weather radar across Pune district." />
         <PuneMap />
+      </section>
+
+      <section id="map" className="mx-auto max-w-[1400px] px-6 mt-16">
+        <SectionHeader eyebrow="Reservoir Map" title="Interactive Reservoir Network" desc="Real coordinates · live storage colour-coded · click a marker for inflow, outflow and catchment rainfall." />
+        <ReservoirMap />
       </section>
 
       {/* Talukas */}
@@ -1049,6 +1054,26 @@ export default function WaterPlatform() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Personal water calculator */}
+      <section id="my-use" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="For You" title="Your Personal Water Footprint" desc="Estimate your household's daily water use and compare it against Pune's average — based on CPHEEO + BIS norms." />
+        <PersonalCalc />
+      </section>
+
+      {/* Wards CTA */}
+      <section className="mx-auto max-w-[1400px] px-6 mt-16">
+        <Link to="/wards" className="glass group flex flex-col items-start gap-3 rounded-3xl p-6 md:flex-row md:items-center md:justify-between md:p-8 hover:border-aqua/40 transition">
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.2em] text-aqua font-semibold">Ward Schedule</div>
+            <h3 className="mt-1 font-display text-2xl font-bold">When does your area get water?</h3>
+            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">Search all PMC + PCMC wards for live alternate-day supply timings, feeder reservoirs and tail-end notes.</p>
+          </div>
+          <span className="rounded-xl bg-aqua px-5 py-3 text-sm font-semibold text-storm group-hover:opacity-90 transition flex items-center gap-2">
+            Open ward directory <ChevronRight className="h-4 w-4" />
+          </span>
+        </Link>
       </section>
 
       {/* Calculator + Forecast */}
