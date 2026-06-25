@@ -874,6 +874,7 @@ function LiveNews() {
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
   const { data: live } = useQuery(liveWeatherQuery);
+  const { data: liveDams } = useQuery(liveDamsQuery);
 
   // Merge live taluka data with mock baseline; live values take priority when present.
   const talukas = useMemo(() => {
@@ -883,6 +884,30 @@ export default function WaterPlatform() {
       return l ? { ...m, ...l } : m;
     });
   }, [live]);
+
+  // Merge live dam readings with baseline reservoirs (currentTMC / inflow / outflow / rain).
+  const liveReservoirs = useMemo(() => {
+    const map = new Map((liveDams?.dams ?? []).map((d) => [d.id, d]));
+    return reservoirs.map((r) => {
+      const l = map.get(r.id);
+      if (!l) return r;
+      const currentTMC =
+        typeof l.currentTMC === "number" ? l.currentTMC
+        : typeof l.fillPct === "number" ? +(r.capacityTMC * (l.fillPct / 100)).toFixed(2)
+        : r.currentTMC;
+      return {
+        ...r,
+        currentTMC,
+        inflowCusec: l.inflowCusec ?? r.inflowCusec,
+        outflowCusec: l.outflowCusec ?? r.outflowCusec,
+        catchmentRainMm: l.catchmentRainMm ?? r.catchmentRainMm,
+      };
+    });
+  }, [liveDams]);
+
+  const liveTotalCurrent = +liveReservoirs.reduce((s, r) => s + r.currentTMC, 0).toFixed(2);
+  const liveOverallFill = +((liveTotalCurrent / totalCapacity) * 100).toFixed(1);
+  const damsAreLive = liveDams?.source === "firecrawl" && (liveDams.dams?.length ?? 0) > 0;
 
   const heroStats = live?.districtAverages ?? {
     rainNow: 0.3,
@@ -896,11 +921,13 @@ export default function WaterPlatform() {
   const trend7d = wowStorageDelta;
   const isLive = live?.source === "open-meteo";
   const securityColor = securityIndex >= 75 ? "safe" : securityIndex >= 55 ? "aqua" : securityIndex >= 35 ? "warn" : "danger";
-  const totalInflow = reservoirs.reduce((s, r) => s + r.inflowCusec, 0);
-  const totalOutflow = reservoirs.reduce((s, r) => s + r.outflowCusec, 0);
-  const avgCatchmentRain = +(reservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / reservoirs.length).toFixed(1);
+  const totalInflow = liveReservoirs.reduce((s, r) => s + r.inflowCusec, 0);
+  const totalOutflow = liveReservoirs.reduce((s, r) => s + r.outflowCusec, 0);
+  const avgCatchmentRain = +(liveReservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / liveReservoirs.length).toFixed(1);
   // Net storage Δ ≈ (inflow - outflow) cusec → TMC/day. 1 cusec ≈ 2.446e-6 TMC/day
   const netStorageDelta = +(((totalInflow - totalOutflow) * 0.0864) / 28316.85).toFixed(2);
+
+
 
 
   return (
