@@ -1033,7 +1033,7 @@ export default function WaterPlatform() {
       {/* KPI strip */}
       <section className="mx-auto max-w-[1400px] px-6 -mt-8 relative z-10">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC · ${overallFill.toFixed(1)}% full`} trend={trend7d} accent="aqua" />
+          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={liveTotalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC · ${liveOverallFill.toFixed(1)}% full${damsAreLive ? " · live" : ""}`} trend={trend7d} accent="aqua" />
           <MetricCard icon={CloudRain} label="District Avg Rainfall" value={heroStats.rain24h.toFixed(0)} unit="mm/24h" sub={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}% vs LPA`} trend={heroStats.departure} accent="monsoon" />
           <MetricCard icon={Gauge} label="YoY Storage" value={`${yoyDeltaPct > 0 ? "+" : ""}${yoyDeltaPct}`} unit="%" sub={`vs same day last year`} trend={yoyDeltaPct} accent={yoyDeltaPct >= 0 ? "safe" : "warn"} />
           <MetricCard icon={Activity} label="Season Rainfall" value={`${monsoonRain}`} unit="mm" sub={`${monsoonNormal} mm normal-to-date · ${districtRainDeparture > 0 ? "+" : ""}${districtRainDeparture}%`} trend={districtRainDeparture} accent="warn" />
