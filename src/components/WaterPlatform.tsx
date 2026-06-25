@@ -19,6 +19,7 @@ import {
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
+import { liveDamsQuery } from "@/lib/dams-query";
 import PersonalCalc from "./PersonalCalc";
 import ReservoirMap from "./ReservoirMapClient";
 import AssistantLauncher from "./AssistantChat";
@@ -873,6 +874,7 @@ function LiveNews() {
 export default function WaterPlatform() {
   const { dark, toggle } = useTheme();
   const { data: live } = useQuery(liveWeatherQuery);
+  const { data: liveDams } = useQuery(liveDamsQuery);
 
   // Merge live taluka data with mock baseline; live values take priority when present.
   const talukas = useMemo(() => {
@@ -882,6 +884,30 @@ export default function WaterPlatform() {
       return l ? { ...m, ...l } : m;
     });
   }, [live]);
+
+  // Merge live dam readings with baseline reservoirs (currentTMC / inflow / outflow / rain).
+  const liveReservoirs = useMemo(() => {
+    const map = new Map((liveDams?.dams ?? []).map((d) => [d.id, d]));
+    return reservoirs.map((r) => {
+      const l = map.get(r.id);
+      if (!l) return r;
+      const currentTMC =
+        typeof l.currentTMC === "number" ? l.currentTMC
+        : typeof l.fillPct === "number" ? +(r.capacityTMC * (l.fillPct / 100)).toFixed(2)
+        : r.currentTMC;
+      return {
+        ...r,
+        currentTMC,
+        inflowCusec: l.inflowCusec ?? r.inflowCusec,
+        outflowCusec: l.outflowCusec ?? r.outflowCusec,
+        catchmentRainMm: l.catchmentRainMm ?? r.catchmentRainMm,
+      };
+    });
+  }, [liveDams]);
+
+  const liveTotalCurrent = +liveReservoirs.reduce((s, r) => s + r.currentTMC, 0).toFixed(2);
+  const liveOverallFill = +((liveTotalCurrent / totalCapacity) * 100).toFixed(1);
+  const damsAreLive = liveDams?.source === "firecrawl" && (liveDams.dams?.length ?? 0) > 0;
 
   const heroStats = live?.districtAverages ?? {
     rainNow: 0.3,
@@ -895,11 +921,13 @@ export default function WaterPlatform() {
   const trend7d = wowStorageDelta;
   const isLive = live?.source === "open-meteo";
   const securityColor = securityIndex >= 75 ? "safe" : securityIndex >= 55 ? "aqua" : securityIndex >= 35 ? "warn" : "danger";
-  const totalInflow = reservoirs.reduce((s, r) => s + r.inflowCusec, 0);
-  const totalOutflow = reservoirs.reduce((s, r) => s + r.outflowCusec, 0);
-  const avgCatchmentRain = +(reservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / reservoirs.length).toFixed(1);
+  const totalInflow = liveReservoirs.reduce((s, r) => s + r.inflowCusec, 0);
+  const totalOutflow = liveReservoirs.reduce((s, r) => s + r.outflowCusec, 0);
+  const avgCatchmentRain = +(liveReservoirs.reduce((s, r) => s + r.catchmentRainMm, 0) / liveReservoirs.length).toFixed(1);
   // Net storage Δ ≈ (inflow - outflow) cusec → TMC/day. 1 cusec ≈ 2.446e-6 TMC/day
   const netStorageDelta = +(((totalInflow - totalOutflow) * 0.0864) / 28316.85).toFixed(2);
+
+
 
 
   return (
@@ -1005,7 +1033,7 @@ export default function WaterPlatform() {
       {/* KPI strip */}
       <section className="mx-auto max-w-[1400px] px-6 -mt-8 relative z-10">
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={totalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC · ${overallFill.toFixed(1)}% full`} trend={trend7d} accent="aqua" />
+          <MetricCard icon={Droplets} label="Total Reservoir Storage" value={liveTotalCurrent.toFixed(1)} unit="TMC" sub={`of ${totalCapacity.toFixed(1)} TMC · ${liveOverallFill.toFixed(1)}% full${damsAreLive ? " · live" : ""}`} trend={trend7d} accent="aqua" />
           <MetricCard icon={CloudRain} label="District Avg Rainfall" value={heroStats.rain24h.toFixed(0)} unit="mm/24h" sub={`${heroStats.departure > 0 ? "+" : ""}${heroStats.departure}% vs LPA`} trend={heroStats.departure} accent="monsoon" />
           <MetricCard icon={Gauge} label="YoY Storage" value={`${yoyDeltaPct > 0 ? "+" : ""}${yoyDeltaPct}`} unit="%" sub={`vs same day last year`} trend={yoyDeltaPct} accent={yoyDeltaPct >= 0 ? "safe" : "warn"} />
           <MetricCard icon={Activity} label="Season Rainfall" value={`${monsoonRain}`} unit="mm" sub={`${monsoonNormal} mm normal-to-date · ${districtRainDeparture > 0 ? "+" : ""}${districtRainDeparture}%`} trend={districtRainDeparture} accent="warn" />
@@ -1035,11 +1063,25 @@ export default function WaterPlatform() {
       {/* Reservoirs */}
       <section id="reservoirs" className="mx-auto max-w-[1400px] px-6 mt-20">
         <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc={`Aggregate capacity ${totalCapacity.toFixed(1)} TMC across ${reservoirs.length} major dams supplying Pune Metropolitan Region.`} />
+        <div className="-mt-4 mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ${damsAreLive ? "bg-safe/15 text-safe" : "bg-muted text-muted-foreground"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${damsAreLive ? "bg-safe animate-pulse" : "bg-muted-foreground"}`} />
+            {damsAreLive ? `Live · ${liveDams?.dams.length} dams updated` : "Baseline · live source unavailable"}
+          </span>
+          {liveDams?.asOf && <span className="text-muted-foreground">As of {liveDams.asOf}</span>}
+          {liveDams?.fetchedAt && <span className="text-muted-foreground">· Fetched {new Date(liveDams.fetchedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</span>}
+          {liveDams?.sourceUrl && (
+            <a href={liveDams.sourceUrl} target="_blank" rel="noreferrer" className="text-aqua underline-offset-2 hover:underline">
+              source
+            </a>
+          )}
+        </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {reservoirs.map((r) => (
+          {liveReservoirs.map((r) => (
             <ReservoirFill key={r.id} name={r.name} pct={(r.currentTMC / r.capacityTMC) * 100} capacity={r.capacityTMC} current={r.currentTMC} />
           ))}
         </div>
+
 
         <div className="glass mt-4 grid grid-cols-1 md:grid-cols-4 gap-px rounded-2xl overflow-hidden">
           {[
