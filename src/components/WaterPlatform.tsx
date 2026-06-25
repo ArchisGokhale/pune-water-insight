@@ -1063,11 +1063,25 @@ export default function WaterPlatform() {
       {/* Reservoirs */}
       <section id="reservoirs" className="mx-auto max-w-[1400px] px-6 mt-20">
         <SectionHeader eyebrow="Reservoir Network" title="Live Storage Dashboard" desc={`Aggregate capacity ${totalCapacity.toFixed(1)} TMC across ${reservoirs.length} major dams supplying Pune Metropolitan Region.`} />
+        <div className="-mt-4 mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 ${damsAreLive ? "bg-safe/15 text-safe" : "bg-muted text-muted-foreground"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${damsAreLive ? "bg-safe animate-pulse" : "bg-muted-foreground"}`} />
+            {damsAreLive ? `Live · ${liveDams?.dams.length} dams updated` : "Baseline · live source unavailable"}
+          </span>
+          {liveDams?.asOf && <span className="text-muted-foreground">As of {liveDams.asOf}</span>}
+          {liveDams?.fetchedAt && <span className="text-muted-foreground">· Fetched {new Date(liveDams.fetchedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</span>}
+          {liveDams?.sourceUrl && (
+            <a href={liveDams.sourceUrl} target="_blank" rel="noreferrer" className="text-aqua underline-offset-2 hover:underline">
+              source
+            </a>
+          )}
+        </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {reservoirs.map((r) => (
+          {liveReservoirs.map((r) => (
             <ReservoirFill key={r.id} name={r.name} pct={(r.currentTMC / r.capacityTMC) * 100} capacity={r.capacityTMC} current={r.currentTMC} />
           ))}
         </div>
+
 
         <div className="glass mt-4 grid grid-cols-1 md:grid-cols-4 gap-px rounded-2xl overflow-hidden">
           {[
