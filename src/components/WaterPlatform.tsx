@@ -19,6 +19,7 @@ import {
 } from "@/lib/water-data";
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
+import { liveDamsQuery } from "@/lib/dams-query";
 import PersonalCalc from "./PersonalCalc";
 import ReservoirMap from "./ReservoirMapClient";
 import AssistantLauncher from "./AssistantChat";
