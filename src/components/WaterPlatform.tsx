@@ -20,7 +20,7 @@ import {
 import { liveWeatherQuery } from "@/lib/weather-query";
 import { liveNewsQuery } from "@/lib/news-query";
 import PersonalCalc from "./PersonalCalc";
-import ReservoirMap from "./ReservoirMap";
+import ReservoirMap from "./ReservoirMapClient";
 import AssistantLauncher from "./AssistantChat";
 
 
