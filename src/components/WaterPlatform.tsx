@@ -955,7 +955,7 @@ export default function WaterPlatform() {
             <div className="text-white">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 backdrop-blur px-3 py-1 text-xs">
                 <span className={`h-1.5 w-1.5 rounded-full animate-pulse ${isLive ? "bg-safe" : "bg-warn"}`} />
-                <span className="font-mono uppercase tracking-wider text-white/80">
+                <span className="font-mono uppercase tracking-wider text-white/80" suppressHydrationWarning>
                   {isLive ? "Live · Open-Meteo" : "Cached feed"} · Monsoon {monsoonProgress}% · Rainfall {districtRainDeparture > 0 ? "+" : ""}{districtRainDeparture}% LPA
                 </span>
               </div>
