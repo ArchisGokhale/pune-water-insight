@@ -790,7 +790,9 @@ function Sources() {
 }
 
 function LiveNews() {
-  const { data, isLoading, refetch, isFetching } = useQuery(liveNewsQuery);
+  const queryClient = useQueryClient();
+  const { data, isLoading, isFetching } = useQuery(liveNewsQuery);
+  const [refreshing, setRefreshing] = useState(false);
   const items = data?.items ?? [];
   const isLive = data?.source === "firecrawl" && items.length > 0;
   const catColor: Record<string, string> = {
@@ -800,6 +802,24 @@ function LiveNews() {
     rainfall: "var(--monsoon)",
     general: "var(--muted-foreground)",
   };
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["live-news"] }),
+        queryClient.invalidateQueries({ queryKey: ["live-dams"] }),
+        queryClient.invalidateQueries({ queryKey: ["live-weather"] }),
+      ]);
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ["live-news"] }),
+        queryClient.refetchQueries({ queryKey: ["live-dams"] }),
+        queryClient.refetchQueries({ queryKey: ["live-weather"] }),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  const busy = refreshing || isFetching;
   return (
     <div className="glass rounded-3xl p-6">
       <div className="mb-5 flex items-center justify-between gap-3">
@@ -819,13 +839,14 @@ function LiveNews() {
           </div>
         </div>
         <button
-          onClick={() => refetch()}
-          disabled={isFetching}
+          onClick={handleRefresh}
+          disabled={busy}
           className="rounded-lg border border-border bg-card/60 px-3 py-1.5 text-xs font-medium hover:bg-card disabled:opacity-50"
         >
-          {isFetching ? "Refreshing…" : "Refresh"}
+          {busy ? "Refreshing…" : "Refresh all live data"}
         </button>
       </div>
+
 
       {isLoading && (
         <div className="grid gap-3">
