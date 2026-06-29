@@ -83,11 +83,12 @@ export const getLiveDamLevels = createServerFn({ method: "GET" }).handler(
       const firecrawl = new Firecrawl({ apiKey });
 
       // Use search-with-extraction: more resilient than a single fragile URL.
+      const monthYear = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
       const search: any = await firecrawl.search(
-        "Khadakwasla Panshet Varasgaon Temghar Pavana Mulshi Bhama Askhed dam water storage TMC today",
+        `Pune dam water storage today ${monthYear} Khadakwasla Panshet Varasgaon Temghar Pavana Mulshi Bhama Askhed TMC percent`,
         {
-          limit: 5,
-          tbs: "qdr:w",
+          limit: 8,
+          tbs: "qdr:d",
           scrapeOptions: {
             formats: [{ type: "json", schema: SCHEMA as any, prompt: EXTRACT_PROMPT }],
             onlyMainContent: true,
