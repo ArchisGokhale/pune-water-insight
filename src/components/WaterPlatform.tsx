@@ -706,6 +706,62 @@ function AnalyticsCharts() {
 }
 
 function EventsTimeline() {
+  const { data: newsData, isLoading } = useQuery(liveNewsQuery);
+  const { data: liveDams } = useQuery(liveDamsQuery);
+  const { data: live } = useQuery(liveWeatherQuery);
+
+  const liveAlerts = useMemo(() => {
+    return (newsData?.items ?? [])
+      .filter((n) => ["alert", "supply", "reservoir", "rainfall"].includes(n.category))
+      .slice(0, 6)
+      .map((n) => {
+        const type = n.category === "alert" || n.category === "supply" ? "danger" : n.category === "reservoir" ? "warn" : "info";
+        const d = n.publishedAt ? new Date(n.publishedAt) : new Date();
+        const time = (isNaN(d.getTime()) ? new Date() : d)
+          .toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+        return { time, tag: n.source, type, title: n.title, url: n.url as string | undefined };
+      });
+  }, [newsData]);
+
+  const synthesized = useMemo(() => {
+    const today = new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+    const out: { time: string; tag: string; type: string; title: string; url?: string }[] = [];
+    const dams = liveDams?.dams ?? [];
+    if (dams.length) {
+      const parts = ["khadakwasla", "panshet", "varasgaon", "temghar", "pavana"]
+        .map((id) => {
+          const d = dams.find((x) => x.id === id);
+          return d?.fillPct != null ? `${d.name} ${d.fillPct.toFixed(1)}%` : null;
+        })
+        .filter(Boolean) as string[];
+      if (parts.length) {
+        const kw = dams.find((d) => d.id === "khadakwasla");
+        out.push({
+          time: liveDams?.asOf || today,
+          tag: "WRD",
+          type: (kw?.fillPct ?? 100) < 30 ? "danger" : "warn",
+          title: `Live dam readings — ${parts.join(", ")}.`,
+          url: liveDams?.sourceUrl,
+        });
+      }
+    }
+    const tlist = live?.talukas ?? [];
+    if (tlist.length) {
+      const avg = tlist.reduce((s, t) => s + (t.rain24h ?? 0), 0) / tlist.length;
+      if (avg > 0) {
+        out.push({
+          time: today,
+          tag: "IMD",
+          type: avg > 20 ? "warn" : "info",
+          title: `District 24h rainfall avg ${avg.toFixed(1)} mm across ${tlist.length} talukas (Open-Meteo).`,
+        });
+      }
+    }
+    return out;
+  }, [liveDams, live]);
+
+  const list = liveAlerts.length > 0 ? liveAlerts : [...synthesized, ...events.slice(0, Math.max(0, 5 - synthesized.length))];
+
   return (
     <div className="glass rounded-3xl p-6">
       <div className="mb-4 flex items-center justify-between">
@@ -714,19 +770,28 @@ function EventsTimeline() {
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="font-display text-xl font-bold">Live Alerts & Advisories</h3>
-            <p className="text-xs text-muted-foreground">Aggregated from PMC, IMD, WRD, Disaster Management</p>
+            <h3 className="font-display text-xl font-bold flex items-center gap-2">
+              Live Alerts & Advisories
+              {liveAlerts.length > 0 && <span className="text-[10px] font-mono uppercase tracking-wider text-safe">● live</span>}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              {liveAlerts.length > 0
+                ? `Aggregated from latest Pune coverage · ${liveAlerts.length} live items`
+                : "PMC · IMD · WRD (synthesized from live readings)"}
+            </p>
           </div>
         </div>
       </div>
       <div className="space-y-3">
-        {events.map((e, i) => {
+        {isLoading && list.length === 0 && [1, 2, 3].map((i) => <div key={i} className="h-16 rounded-xl bg-card/40 animate-pulse" />)}
+        {list.map((e, i) => {
           const c = e.type === "danger" ? "var(--danger)" : e.type === "warn" ? "var(--warn)" : "var(--aqua)";
-          return (
-            <div key={i} className="relative flex gap-4 rounded-xl border border-border/60 bg-card/40 p-4 hover:bg-card/70 transition">
+          const url = (e as { url?: string }).url;
+          const inner = (
+            <>
               <div className="relative flex flex-col items-center">
                 <div className="h-2.5 w-2.5 rounded-full" style={{ background: c, boxShadow: `0 0 12px ${c}` }} />
-                {i < events.length - 1 && <div className="mt-2 w-px flex-1 bg-border" />}
+                {i < list.length - 1 && <div className="mt-2 w-px flex-1 bg-border" />}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider">
@@ -735,7 +800,13 @@ function EventsTimeline() {
                 </div>
                 <div className="mt-1.5 text-sm">{e.title}</div>
               </div>
-            </div>
+            </>
+          );
+          const cls = "relative flex gap-4 rounded-xl border border-border/60 bg-card/40 p-4 hover:bg-card/70 transition";
+          return url ? (
+            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+          ) : (
+            <div key={i} className={cls}>{inner}</div>
           );
         })}
       </div>
