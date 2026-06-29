@@ -125,8 +125,15 @@ export const wowStorageDelta = +(
 
 // ---------- Current advisories (verified from published news, 18–20 Jun 2026) ----------
 export const events = [
+  { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60-90 mm in 24h, ghat talukas on yellow alert." },
+  { time: "29 Jun 2026", tag: "WRD",            type: "warn",   title: "First measurable inflows into Varasgaon (1,200 cusec) and Panshet (850 cusec); Khadakwasla complex inches up to 15.2%." },
+  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; no rollback yet — committee to reassess if inflows sustain for 72 hours." },
+  { time: "27 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon advances into Pune district, 8 days behind normal onset date (10 Jun)." },
+  { time: "26 Jun 2026", tag: "Collector",      type: "danger", title: "Pune Collector convenes emergency water-audit meeting; tanker rates capped, illegal borewell drilling banned in PMC limits." },
+  { time: "25 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar still dry; Khadakwasla complex at 13.4% — lowest 25-June reading in a decade." },
+  { time: "24 Jun 2026", tag: "Citizens",       type: "warn",   title: "Residents of Dhayari, Sinhagad Road report 4th consecutive day of zero supply; PMC deploys 120 extra tankers." },
+  { time: "22 Jun 2026", tag: "PCMC",           type: "warn",   title: "PCMC extends 20% supply cut to Pavana command area; industrial users asked to recycle 30% of intake." },
   { time: "20 Jun 2026", tag: "PMC",            type: "danger", title: "Alternate-day water supply imposed across Pune city; Khadakwasla system at 13.9%." },
-  { time: "20 Jun 2026", tag: "Citizens",       type: "warn",   title: "Women protest at Bhimanagar, Ghorpadi over irregular water supply." },
   { time: "20 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar dam dry; Varasgaon at 11.7%, Panshet at 17.8%, Khadakwasla at 33.7%." },
   { time: "19 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon delayed over Pune district; rainfall departure -50% to date." },
   { time: "18 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector orders tight monitoring of Khadakwasla + Pavana dam usage." },

@@ -760,7 +760,7 @@ function EventsTimeline() {
     return out;
   }, [liveDams, live]);
 
-  const list = liveAlerts.length > 0 ? liveAlerts : [...synthesized, ...events.slice(0, Math.max(0, 5 - synthesized.length))];
+  const list = liveAlerts.length > 0 ? liveAlerts : [...synthesized, ...events.slice(0, Math.max(0, 8 - synthesized.length))];
 
   return (
     <div className="glass rounded-3xl p-6">
