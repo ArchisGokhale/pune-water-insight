@@ -1346,6 +1346,12 @@ export default function WaterPlatform() {
         </div>
       </section>
 
+      {/* Per-dam storage timeline */}
+      <section id="dam-timeline" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="Timeline" title="Per-Dam Storage Trajectory" desc="14-day flow-chart view of each dam's fill level with inflow, outflow and catchment context — updated to 3 Jul 2026." />
+        <DamTimeline />
+      </section>
+
       {/* Personal water calculator */}
       <section id="my-use" className="mx-auto max-w-[1400px] px-6 mt-20">
         <SectionHeader eyebrow="For You" title="Your Personal Water Footprint" desc="Estimate your household's daily water use and compare it against Pune's average — based on CPHEEO + BIS norms." />
