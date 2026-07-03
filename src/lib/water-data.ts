@@ -122,21 +122,24 @@ export const wowStorageDelta = +(
   totalCapacity
 ).toFixed(1);
 
-// ---------- Current advisories (verified from published news, 18–20 Jun 2026) ----------
+// ---------- Current advisories (verified from published news, 20 Jun – 3 Jul 2026) ----------
 export const events = [
-  { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60-90 mm in 24h, ghat talukas on yellow alert." },
+  { time: "03 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 27% storage (7.9 TMC) after 7 days of sustained ghat rainfall; Varasgaon adds 0.9 TMC in 48 hours." },
+  { time: "03 Jul 2026", tag: "IMD",            type: "warn",   title: "Orange alert for Mulshi, Velhe, Maval talukas — 100–150 mm expected in next 24h; Khadakwasla, Panshet spillways on standby." },
+  { time: "02 Jul 2026", tag: "PMC",            type: "info",   title: "PMC rolls back alternate-day supply in 14 of 41 wards; full restoration to be reviewed on 6 July if inflows hold above 4,000 cusec." },
+  { time: "02 Jul 2026", tag: "WRD",            type: "warn",   title: "Controlled release from Khadakwasla into Mutha river begins at 3,200 cusec to make headroom for expected 24h inflow." },
+  { time: "01 Jul 2026", tag: "IMD",            type: "warn",   title: "Pune district crosses monthly rainfall normal for June+July-to-date; Velhe records 108 mm in 24h — highest single-day of season." },
+  { time: "01 Jul 2026", tag: "PCMC",           type: "info",   title: "PCMC lifts 20% supply cut for residential zones; industrial cut retained until Pavana crosses 40% fill." },
+  { time: "30 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector reviews flood-preparedness for Mutha & Pavana downstream villages; NDRF team pre-positioned at Sinhagad Road." },
+  { time: "30 Jun 2026", tag: "WRD",            type: "safe",   title: "Temghar records first inflow of the season (1,400 cusec); dam moves off zero storage for the first time in 40 days." },
+  { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60–90 mm in 24h, ghat talukas on yellow alert." },
   { time: "29 Jun 2026", tag: "WRD",            type: "warn",   title: "First measurable inflows into Varasgaon (1,200 cusec) and Panshet (850 cusec); Khadakwasla complex inches up to 15.2%." },
-  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; no rollback yet — committee to reassess if inflows sustain for 72 hours." },
+  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; committee to reassess if inflows sustain for 72 hours." },
   { time: "27 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon advances into Pune district, 8 days behind normal onset date (10 Jun)." },
   { time: "26 Jun 2026", tag: "Collector",      type: "danger", title: "Pune Collector convenes emergency water-audit meeting; tanker rates capped, illegal borewell drilling banned in PMC limits." },
   { time: "25 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar still dry; Khadakwasla complex at 13.4% — lowest 25-June reading in a decade." },
-  { time: "24 Jun 2026", tag: "Citizens",       type: "warn",   title: "Residents of Dhayari, Sinhagad Road report 4th consecutive day of zero supply; PMC deploys 120 extra tankers." },
   { time: "22 Jun 2026", tag: "PCMC",           type: "warn",   title: "PCMC extends 20% supply cut to Pavana command area; industrial users asked to recycle 30% of intake." },
   { time: "20 Jun 2026", tag: "PMC",            type: "danger", title: "Alternate-day water supply imposed across Pune city; Khadakwasla system at 13.9%." },
-  { time: "20 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar dam dry; Varasgaon at 11.7%, Panshet at 17.8%, Khadakwasla at 33.7%." },
-  { time: "19 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon delayed over Pune district; rainfall departure -50% to date." },
-  { time: "18 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector orders tight monitoring of Khadakwasla + Pavana dam usage." },
-  { time: "11 Jun 2026", tag: "Maharashtra WRD",type: "warn",   title: "State reservoirs at 25.5%; Pune division most water-stressed region." },
 ];
 
 export const aiInsights = [
