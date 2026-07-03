@@ -115,6 +115,7 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
     { label: "Overview", href: "#overview" },
     { label: "Map", href: "#map" },
     { label: "Reservoirs", href: "#reservoirs" },
+    { label: "Timeline", href: "#dam-timeline" },
     { label: "My Use", href: "#my-use" },
     { label: "Wards", href: "/wards", external: true },
     { label: "Forecast", href: "#forecast" },
