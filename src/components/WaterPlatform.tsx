@@ -785,7 +785,7 @@ function EventsTimeline() {
       <div className="space-y-3">
         {isLoading && list.length === 0 && [1, 2, 3].map((i) => <div key={i} className="h-16 rounded-xl bg-card/40 animate-pulse" />)}
         {list.map((e, i) => {
-          const c = e.type === "danger" ? "var(--danger)" : e.type === "warn" ? "var(--warn)" : "var(--aqua)";
+          const c = e.type === "danger" ? "var(--danger)" : e.type === "warn" ? "var(--warn)" : e.type === "safe" ? "var(--safe)" : "var(--aqua)";
           const url = (e as { url?: string }).url;
           const inner = (
             <>
