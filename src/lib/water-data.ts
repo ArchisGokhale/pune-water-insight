@@ -143,8 +143,8 @@ export const events = [
 ];
 
 export const aiInsights = [
-  `Khadakwasla complex holds only ${khadakwaslaComplexCurrent} TMC vs ${khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0).toFixed(2)} TMC same day last year — a ${Math.round(((khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0) - khadakwaslaComplexCurrent) / khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0)) * 100)}% YoY shortfall.`,
-  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage will last ~${daysAvailable} days without inflows — monsoon onset is the critical variable.`,
-  `Temghar dam is already dry; Varasgaon and Panshet are sustaining Khadakwasla via routed releases, which is depleting upstream storage faster than usual.`,
-  `Eastern talukas (Indapur, Baramati, Daund) are 60-70% below LPA — kharif sowing advisories should be issued if onset slips past 30 June.`,
+  `Khadakwasla complex has recovered to ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 3 Jul — up from 4.05 TMC on 20 Jun after a week of active monsoon in the ghats.`,
+  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage now covers ~${daysAvailable} days without further inflows; ghat forecast keeps outlook constructive.`,
+  `Ghat-belt talukas (Mulshi +18%, Velhe +22%) are running above LPA, while eastern plains (Indapur -52%, Baramati -44%) remain rain-deficit — kharif sowing skewed to western Pune this season.`,
+  `Temghar recorded first inflow of the season on 30 Jun (1,400 cusec); Varasgaon and Panshet gained +12% and +12% fill respectively over the last 7 days.`,
 ];
