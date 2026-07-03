@@ -115,6 +115,7 @@ function Nav({ dark, toggle }: { dark: boolean; toggle: () => void }) {
     { label: "Overview", href: "#overview" },
     { label: "Map", href: "#map" },
     { label: "Reservoirs", href: "#reservoirs" },
+    { label: "Timeline", href: "#dam-timeline" },
     { label: "My Use", href: "#my-use" },
     { label: "Wards", href: "/wards", external: true },
     { label: "Forecast", href: "#forecast" },
@@ -705,6 +706,162 @@ function AnalyticsCharts() {
   );
 }
 
+function DamTimeline() {
+  const [selected, setSelected] = useState<string>("all");
+  const { data: liveDams } = useQuery(liveDamsQuery);
+
+  // Build 14-day date labels ending today
+  const dateLabels = useMemo(() => {
+    const out: string[] = [];
+    const today = new Date();
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      out.push(d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }));
+    }
+    return out;
+  }, []);
+
+  // Overlay: merged series for "all" view
+  const mergedSeries = useMemo(() => {
+    return dateLabels.map((label, idx) => {
+      const row: Record<string, string | number> = { d: label };
+      reservoirs.forEach((r) => {
+        row[r.id] = r.trend14d[idx] ?? r.trend14d.at(-1) ?? 0;
+      });
+      return row;
+    });
+  }, [dateLabels]);
+
+  const damColors: Record<string, string> = {
+    khadakwasla: "var(--aqua)",
+    panshet: "var(--monsoon)",
+    varasgaon: "var(--storm)",
+    temghar: "var(--danger)",
+    pavana: "var(--safe)",
+    mulshi: "#a855f7",
+    "bhama-askhed": "#f59e0b",
+  };
+
+  const activeDam = reservoirs.find((r) => r.id === selected);
+  const activeSeries = activeDam
+    ? dateLabels.map((label, idx) => {
+        const pct = activeDam.trend14d[idx] ?? 0;
+        return {
+          d: label,
+          fill: +pct.toFixed(1),
+          tmc: +((pct / 100) * activeDam.capacityTMC).toFixed(2),
+        };
+      })
+    : [];
+
+  const liveOverride = liveDams?.dams ?? [];
+
+  return (
+    <div className="glass rounded-3xl p-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 className="font-display text-xl font-bold">Dam Storage Timeline · 14 days</h3>
+          <p className="text-xs text-muted-foreground">
+            Daily % fill trajectory through 3 Jul 2026 · switch between dams or overlay all
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          <button
+            onClick={() => setSelected("all")}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition ${selected === "all" ? "bg-aqua text-white" : "bg-card/60 text-muted-foreground hover:text-foreground"}`}
+          >
+            All dams
+          </button>
+          {reservoirs.map((r) => (
+            <button
+              key={r.id}
+              onClick={() => setSelected(r.id)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition ${selected === r.id ? "text-white" : "bg-card/60 text-muted-foreground hover:text-foreground"}`}
+              style={selected === r.id ? { background: damColors[r.id] } : undefined}
+            >
+              {r.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {selected === "all" ? (
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={mergedSeries} margin={{ left: -15, right: 10, top: 5 }}>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="d" stroke="var(--muted-foreground)" fontSize={10} />
+              <YAxis stroke="var(--muted-foreground)" fontSize={10} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+              <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }} />
+              {reservoirs.map((r) => (
+                <Line
+                  key={r.id}
+                  type="monotone"
+                  dataKey={r.id}
+                  name={r.name}
+                  stroke={damColors[r.id]}
+                  strokeWidth={2}
+                  dot={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      ) : activeDam ? (
+        <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={activeSeries} margin={{ left: -15, right: 10, top: 5 }}>
+                <defs>
+                  <linearGradient id={`grad-${activeDam.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={damColors[activeDam.id]} stopOpacity={0.55} />
+                    <stop offset="100%" stopColor={damColors[activeDam.id]} stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="d" stroke="var(--muted-foreground)" fontSize={10} />
+                <YAxis stroke="var(--muted-foreground)" fontSize={10} domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+                <Tooltip
+                  contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 12, fontSize: 12 }}
+                  formatter={(val: number, name: string) => (name === "fill" ? [`${val}%`, "Fill"] : [`${val} TMC`, "Storage"])}
+                />
+                <Area type="monotone" dataKey="fill" stroke={damColors[activeDam.id]} strokeWidth={2.5} fill={`url(#grad-${activeDam.id})`} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+            {(() => {
+              const overrideFill = liveOverride.find((d) => d.id === activeDam.id)?.fillPct;
+              const currentFill = overrideFill ?? (activeDam.currentTMC / activeDam.capacityTMC) * 100;
+              const first = activeDam.trend14d[0];
+              const last = activeDam.trend14d.at(-1) ?? 0;
+              const delta = +(last - first).toFixed(1);
+              const stats = [
+                { l: "Current fill", v: `${currentFill.toFixed(1)}%`, c: "aqua" },
+                { l: "Storage", v: `${activeDam.currentTMC} TMC`, c: "monsoon" },
+                { l: "14-day Δ", v: `${delta >= 0 ? "+" : ""}${delta} pp`, c: delta >= 0 ? "safe" : "warn" },
+                { l: "24h inflow", v: `${activeDam.inflowCusec.toLocaleString("en-IN")} cusec`, c: activeDam.inflowCusec > 0 ? "safe" : "warn" },
+                { l: "24h outflow", v: `${activeDam.outflowCusec.toLocaleString("en-IN")} cusec`, c: "warn" },
+                { l: "Catchment rain", v: `${activeDam.catchmentRainMm} mm`, c: "monsoon" },
+              ];
+              return stats.map((s) => (
+                <div key={s.l} className="rounded-xl border border-border/60 bg-card/40 p-3">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
+                  <div className={`mt-1 font-display text-lg font-bold tabular-nums ${s.c === "safe" ? "text-safe" : s.c === "warn" ? "text-warn" : s.c === "aqua" ? "text-aqua" : "text-monsoon"}`}>
+                    {s.v}
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+
 function EventsTimeline() {
   const { data: newsData, isLoading } = useQuery(liveNewsQuery);
   const { data: liveDams } = useQuery(liveDamsQuery);
@@ -785,7 +942,7 @@ function EventsTimeline() {
       <div className="space-y-3">
         {isLoading && list.length === 0 && [1, 2, 3].map((i) => <div key={i} className="h-16 rounded-xl bg-card/40 animate-pulse" />)}
         {list.map((e, i) => {
-          const c = e.type === "danger" ? "var(--danger)" : e.type === "warn" ? "var(--warn)" : "var(--aqua)";
+          const c = e.type === "danger" ? "var(--danger)" : e.type === "warn" ? "var(--warn)" : e.type === "safe" ? "var(--safe)" : "var(--aqua)";
           const url = (e as { url?: string }).url;
           const inner = (
             <>
@@ -1188,6 +1345,12 @@ export default function WaterPlatform() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Per-dam storage timeline */}
+      <section id="dam-timeline" className="mx-auto max-w-[1400px] px-6 mt-20">
+        <SectionHeader eyebrow="Timeline" title="Per-Dam Storage Trajectory" desc="14-day flow-chart view of each dam's fill level with inflow, outflow and catchment context — updated to 3 Jul 2026." />
+        <DamTimeline />
       </section>
 
       {/* Personal water calculator */}

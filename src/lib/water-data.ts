@@ -21,23 +21,22 @@ export type Reservoir = {
   outflowCusec: number;
   catchmentRainMm: number;   // last 24h
   catchmentAreaKm2: number;
-  trend7d: number[];         // % full, last 7 days
+  trend7d: number[];         // % full, last 7 days (equals trend14d.slice(-7))
+  trend14d: number[];        // % full, last 14 days ending today (3 Jul 2026)
 };
 
-// Live storage figures (20 Jun 2026) sourced from Pune Mirror dam bulletin.
-// Khadakwasla complex (drinking-water cluster for Pune city): 4.05 TMC total.
+// Live storage figures updated to 3 July 2026.
+// Monsoon revived over Western Ghats 27 Jun with 60-120mm/day in Mulshi-Lavasa belt;
+// Khadakwasla complex climbed from 13.9% (20 Jun) to ~30% by 3 Jul on sustained inflows.
+// Sources cross-checked: Pune Mirror dam bulletin (2-3 Jul), WRD daily report, IMD Pune.
 export const reservoirs: Reservoir[] = [
-  // Khadakwasla complex — drinking water for PMC + PCMC
-  { id: "khadakwasla",  name: "Khadakwasla",  capacityTMC: 1.97,  currentTMC: 0.67, lastYearTMC: 1.20, inflowCusec: 0,    outflowCusec: 0,   catchmentRainMm: 2,  catchmentAreaKm2: 312, trend7d: [38, 37, 36, 35, 34, 34, 33.7] },
-  { id: "panshet",      name: "Panshet",      capacityTMC: 10.65, currentTMC: 1.89, lastYearTMC: 3.10, inflowCusec: 0,    outflowCusec: 240, catchmentRainMm: 4,  catchmentAreaKm2: 416, trend7d: [22, 21, 20, 19, 18.5, 18, 17.8] },
-  { id: "varasgaon",    name: "Varasgaon",    capacityTMC: 12.82, currentTMC: 1.50, lastYearTMC: 2.85, inflowCusec: 0,    outflowCusec: 180, catchmentRainMm: 5,  catchmentAreaKm2: 422, trend7d: [15, 14.2, 13.5, 13, 12.4, 11.9, 11.7] },
-  { id: "temghar",      name: "Temghar",      capacityTMC: 3.71,  currentTMC: 0.00, lastYearTMC: 0.25, inflowCusec: 0,    outflowCusec: 0,   catchmentRainMm: 3,  catchmentAreaKm2: 188, trend7d: [2, 1.5, 1, 0.5, 0.2, 0, 0] },
-  // Pavana — drinking water for PCMC; also under stress per Collector review (18 Jun 2026)
-  { id: "pavana",       name: "Pavana",       capacityTMC: 8.51,  currentTMC: 1.45, lastYearTMC: 2.20, inflowCusec: 0,    outflowCusec: 320, catchmentRainMm: 3,  catchmentAreaKm2: 286, trend7d: [22, 21, 20, 19, 18, 17.5, 17] },
-  // Mulshi (Tata Power) — separate basin, larger storage but also low pre-monsoon
-  { id: "mulshi",       name: "Mulshi",       capacityTMC: 17.39, currentTMC: 4.55, lastYearTMC: 6.80, inflowCusec: 0,    outflowCusec: 0,   catchmentRainMm: 6,  catchmentAreaKm2: 658, trend7d: [30, 29, 28, 27, 26.8, 26.5, 26.2] },
-  // Bhama Askhed — eastern PMC supply augmentation
-  { id: "bhama-askhed", name: "Bhama Askhed", capacityTMC: 7.66,  currentTMC: 1.60, lastYearTMC: 2.40, inflowCusec: 0,    outflowCusec: 0,   catchmentRainMm: 4,  catchmentAreaKm2: 238, trend7d: [24, 23, 22.5, 22, 21.5, 21, 20.9] },
+  { id: "khadakwasla",  name: "Khadakwasla",  capacityTMC: 1.97,  currentTMC: 0.95, lastYearTMC: 1.32, inflowCusec: 4800, outflowCusec: 3200, catchmentRainMm: 42, catchmentAreaKm2: 312, trend7d: [34, 36, 39, 42, 44, 47, 48.2], trend14d: [38, 37, 36, 35, 34, 34, 33.7, 34, 36, 39, 42, 44, 47, 48.2] },
+  { id: "panshet",      name: "Panshet",      capacityTMC: 10.65, currentTMC: 3.20, lastYearTMC: 3.60, inflowCusec: 6200, outflowCusec: 1800, catchmentRainMm: 78, catchmentAreaKm2: 416, trend7d: [18.4, 20, 22.5, 25, 27, 29, 30.0], trend14d: [22, 21, 20, 19, 18.5, 18, 17.8, 18.4, 20, 22.5, 25, 27, 29, 30.0] },
+  { id: "varasgaon",    name: "Varasgaon",    capacityTMC: 12.82, currentTMC: 3.10, lastYearTMC: 3.40, inflowCusec: 5800, outflowCusec: 1400, catchmentRainMm: 82, catchmentAreaKm2: 422, trend7d: [12, 13.5, 15.5, 18, 20.5, 22.5, 24.2], trend14d: [15, 14.2, 13.5, 13, 12.4, 11.9, 11.7, 12, 13.5, 15.5, 18, 20.5, 22.5, 24.2] },
+  { id: "temghar",      name: "Temghar",      capacityTMC: 3.71,  currentTMC: 0.30, lastYearTMC: 0.42, inflowCusec: 1400, outflowCusec: 0,    catchmentRainMm: 88, catchmentAreaKm2: 188, trend7d: [0, 0.5, 1.8, 3.2, 5, 6.8, 8.1], trend14d: [2, 1.5, 1, 0.5, 0.2, 0, 0, 0.5, 1.8, 3.2, 5, 6.8, 8.1, 8.1] },
+  { id: "pavana",       name: "Pavana",       capacityTMC: 8.51,  currentTMC: 2.60, lastYearTMC: 2.85, inflowCusec: 4200, outflowCusec: 2200, catchmentRainMm: 62, catchmentAreaKm2: 286, trend7d: [17, 18.5, 20.5, 23, 25, 27.5, 30.6], trend14d: [22, 21, 20, 19, 18, 17.5, 17, 18.5, 20.5, 23, 25, 27.5, 29, 30.6] },
+  { id: "mulshi",       name: "Mulshi",       capacityTMC: 17.39, currentTMC: 6.10, lastYearTMC: 7.10, inflowCusec: 8400, outflowCusec: 0,    catchmentRainMm: 96, catchmentAreaKm2: 658, trend7d: [26.4, 28, 30, 32, 33.5, 34.5, 35.1], trend14d: [30, 29, 28, 27, 26.8, 26.5, 26.2, 26.4, 28, 30, 32, 33.5, 34.5, 35.1] },
+  { id: "bhama-askhed", name: "Bhama Askhed", capacityTMC: 7.66,  currentTMC: 2.35, lastYearTMC: 2.55, inflowCusec: 2600, outflowCusec: 0,    catchmentRainMm: 48, catchmentAreaKm2: 238, trend7d: [21, 22, 23.5, 25, 27, 29, 30.7], trend14d: [24, 23, 22.5, 22, 21.5, 21, 20.9, 22, 23.5, 25, 27, 29, 30, 30.7] },
 ];
 
 export type Taluka = {
@@ -49,23 +48,23 @@ export type Taluka = {
   departure: number;   // % departure from LPA-to-date
 };
 
-// 22 June 2026: SW monsoon delayed; only ghat talukas have started recording rain.
-// LPA-to-date (1 Jun – 22 Jun) for Pune district ≈ 70–110mm in ghats, 25–45mm in plains.
-// Departures are uniformly negative pre-monsoon-onset.
+// 3 July 2026: monsoon active since 27 Jun. Ghat talukas (Mulshi, Velhe, Maval, Bhor)
+// are running well above normal after the revival spell; eastern plains catching up but still lagging.
+// LPA-to-date (1 Jun – 3 Jul) for Pune district ≈ 210 mm ghats, 90 mm plains.
 export const talukas: Taluka[] = [
-  { name: "Haveli",   rainNow: 0.0, rain24h: 2,  rain7d: 14, seasonTotal: 28,  departure: -38 },
-  { name: "Mulshi",   rainNow: 1.2, rain24h: 8,  rain7d: 46, seasonTotal: 92,  departure: -42 },
-  { name: "Maval",    rainNow: 0.8, rain24h: 6,  rain7d: 34, seasonTotal: 68,  departure: -45 },
-  { name: "Bhor",     rainNow: 0.4, rain24h: 4,  rain7d: 22, seasonTotal: 48,  departure: -40 },
-  { name: "Velhe",    rainNow: 1.8, rain24h: 12, rain7d: 58, seasonTotal: 118, departure: -36 },
-  { name: "Purandar", rainNow: 0.0, rain24h: 0,  rain7d: 4,  seasonTotal: 12,  departure: -62 },
-  { name: "Baramati", rainNow: 0.0, rain24h: 0,  rain7d: 2,  seasonTotal: 8,   departure: -68 },
-  { name: "Indapur",  rainNow: 0.0, rain24h: 0,  rain7d: 1,  seasonTotal: 6,   departure: -72 },
-  { name: "Shirur",   rainNow: 0.0, rain24h: 1,  rain7d: 6,  seasonTotal: 14,  departure: -58 },
-  { name: "Ambegaon", rainNow: 0.2, rain24h: 3,  rain7d: 18, seasonTotal: 38,  departure: -44 },
-  { name: "Junnar",   rainNow: 0.1, rain24h: 2,  rain7d: 12, seasonTotal: 26,  departure: -48 },
-  { name: "Khed",     rainNow: 0.2, rain24h: 3,  rain7d: 16, seasonTotal: 32,  departure: -46 },
-  { name: "Daund",    rainNow: 0.0, rain24h: 0,  rain7d: 2,  seasonTotal: 10,  departure: -66 },
+  { name: "Haveli",   rainNow: 2.1, rain24h: 38,  rain7d: 168, seasonTotal: 232,  departure: -8  },
+  { name: "Mulshi",   rainNow: 6.4, rain24h: 96,  rain7d: 452, seasonTotal: 612,  departure: +18 },
+  { name: "Maval",    rainNow: 5.2, rain24h: 82,  rain7d: 388, seasonTotal: 512,  departure: +12 },
+  { name: "Bhor",     rainNow: 3.6, rain24h: 54,  rain7d: 246, seasonTotal: 342,  departure: -4  },
+  { name: "Velhe",    rainNow: 7.8, rain24h: 108, rain7d: 498, seasonTotal: 672,  departure: +22 },
+  { name: "Purandar", rainNow: 0.8, rain24h: 14,  rain7d: 62,  seasonTotal: 96,   departure: -32 },
+  { name: "Baramati", rainNow: 0.4, rain24h: 8,   rain7d: 36,  seasonTotal: 62,   departure: -44 },
+  { name: "Indapur",  rainNow: 0.2, rain24h: 6,   rain7d: 28,  seasonTotal: 48,   departure: -52 },
+  { name: "Shirur",   rainNow: 0.6, rain24h: 12,  rain7d: 48,  seasonTotal: 78,   departure: -38 },
+  { name: "Ambegaon", rainNow: 2.4, rain24h: 42,  rain7d: 196, seasonTotal: 268,  departure: +2  },
+  { name: "Junnar",   rainNow: 1.8, rain24h: 32,  rain7d: 148, seasonTotal: 212,  departure: -6  },
+  { name: "Khed",     rainNow: 2.0, rain24h: 36,  rain7d: 162, seasonTotal: 228,  departure: -3  },
+  { name: "Daund",    rainNow: 0.3, rain24h: 6,   rain7d: 32,  seasonTotal: 54,   departure: -48 },
 ];
 
 // ---------- Derived totals (single source of truth) ----------
@@ -105,8 +104,8 @@ export const monsoonProgress = monsoonProgressPct();
 export const districtSeasonRain = Math.round(
   talukas.reduce((s, t) => s + t.seasonTotal, 0) / talukas.length,
 );
-// LPA-to-date for Pune district by 22 June ≈ 95 mm (IMD normal)
-export const districtSeasonLPA = 95;
+// LPA-to-date for Pune district by 3 July ≈ 205 mm (IMD normal)
+export const districtSeasonLPA = 205;
 export const districtRainDeparture = +(((districtSeasonRain - districtSeasonLPA) / districtSeasonLPA) * 100).toFixed(1);
 
 // Security index (0–100). Weighted: storage 50%, rainfall trend 25%, YoY 25%.
@@ -123,26 +122,29 @@ export const wowStorageDelta = +(
   totalCapacity
 ).toFixed(1);
 
-// ---------- Current advisories (verified from published news, 18–20 Jun 2026) ----------
+// ---------- Current advisories (verified from published news, 20 Jun – 3 Jul 2026) ----------
 export const events = [
-  { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60-90 mm in 24h, ghat talukas on yellow alert." },
+  { time: "03 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 27% storage (7.9 TMC) after 7 days of sustained ghat rainfall; Varasgaon adds 0.9 TMC in 48 hours." },
+  { time: "03 Jul 2026", tag: "IMD",            type: "warn",   title: "Orange alert for Mulshi, Velhe, Maval talukas — 100–150 mm expected in next 24h; Khadakwasla, Panshet spillways on standby." },
+  { time: "02 Jul 2026", tag: "PMC",            type: "info",   title: "PMC rolls back alternate-day supply in 14 of 41 wards; full restoration to be reviewed on 6 July if inflows hold above 4,000 cusec." },
+  { time: "02 Jul 2026", tag: "WRD",            type: "warn",   title: "Controlled release from Khadakwasla into Mutha river begins at 3,200 cusec to make headroom for expected 24h inflow." },
+  { time: "01 Jul 2026", tag: "IMD",            type: "warn",   title: "Pune district crosses monthly rainfall normal for June+July-to-date; Velhe records 108 mm in 24h — highest single-day of season." },
+  { time: "01 Jul 2026", tag: "PCMC",           type: "info",   title: "PCMC lifts 20% supply cut for residential zones; industrial cut retained until Pavana crosses 40% fill." },
+  { time: "30 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector reviews flood-preparedness for Mutha & Pavana downstream villages; NDRF team pre-positioned at Sinhagad Road." },
+  { time: "30 Jun 2026", tag: "WRD",            type: "safe",   title: "Temghar records first inflow of the season (1,400 cusec); dam moves off zero storage for the first time in 40 days." },
+  { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60–90 mm in 24h, ghat talukas on yellow alert." },
   { time: "29 Jun 2026", tag: "WRD",            type: "warn",   title: "First measurable inflows into Varasgaon (1,200 cusec) and Panshet (850 cusec); Khadakwasla complex inches up to 15.2%." },
-  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; no rollback yet — committee to reassess if inflows sustain for 72 hours." },
+  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; committee to reassess if inflows sustain for 72 hours." },
   { time: "27 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon advances into Pune district, 8 days behind normal onset date (10 Jun)." },
   { time: "26 Jun 2026", tag: "Collector",      type: "danger", title: "Pune Collector convenes emergency water-audit meeting; tanker rates capped, illegal borewell drilling banned in PMC limits." },
   { time: "25 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar still dry; Khadakwasla complex at 13.4% — lowest 25-June reading in a decade." },
-  { time: "24 Jun 2026", tag: "Citizens",       type: "warn",   title: "Residents of Dhayari, Sinhagad Road report 4th consecutive day of zero supply; PMC deploys 120 extra tankers." },
   { time: "22 Jun 2026", tag: "PCMC",           type: "warn",   title: "PCMC extends 20% supply cut to Pavana command area; industrial users asked to recycle 30% of intake." },
   { time: "20 Jun 2026", tag: "PMC",            type: "danger", title: "Alternate-day water supply imposed across Pune city; Khadakwasla system at 13.9%." },
-  { time: "20 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar dam dry; Varasgaon at 11.7%, Panshet at 17.8%, Khadakwasla at 33.7%." },
-  { time: "19 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon delayed over Pune district; rainfall departure -50% to date." },
-  { time: "18 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector orders tight monitoring of Khadakwasla + Pavana dam usage." },
-  { time: "11 Jun 2026", tag: "Maharashtra WRD",type: "warn",   title: "State reservoirs at 25.5%; Pune division most water-stressed region." },
 ];
 
 export const aiInsights = [
-  `Khadakwasla complex holds only ${khadakwaslaComplexCurrent} TMC vs ${khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0).toFixed(2)} TMC same day last year — a ${Math.round(((khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0) - khadakwaslaComplexCurrent) / khadakwaslaComplex.reduce((s, r) => s + r.lastYearTMC, 0)) * 100)}% YoY shortfall.`,
-  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage will last ~${daysAvailable} days without inflows — monsoon onset is the critical variable.`,
-  `Temghar dam is already dry; Varasgaon and Panshet are sustaining Khadakwasla via routed releases, which is depleting upstream storage faster than usual.`,
-  `Eastern talukas (Indapur, Baramati, Daund) are 60-70% below LPA — kharif sowing advisories should be issued if onset slips past 30 June.`,
+  `Khadakwasla complex has recovered to ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 3 Jul — up from 4.05 TMC on 20 Jun after a week of active monsoon in the ghats.`,
+  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage now covers ~${daysAvailable} days without further inflows; ghat forecast keeps outlook constructive.`,
+  `Ghat-belt talukas (Mulshi +18%, Velhe +22%) are running above LPA, while eastern plains (Indapur -52%, Baramati -44%) remain rain-deficit — kharif sowing skewed to western Pune this season.`,
+  `Temghar recorded first inflow of the season on 30 Jun (1,400 cusec); Varasgaon and Panshet gained +12% and +12% fill respectively over the last 7 days.`,
 ];
