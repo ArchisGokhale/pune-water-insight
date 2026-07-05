@@ -104,8 +104,8 @@ export const monsoonProgress = monsoonProgressPct();
 export const districtSeasonRain = Math.round(
   talukas.reduce((s, t) => s + t.seasonTotal, 0) / talukas.length,
 );
-// LPA-to-date for Pune district by 3 July ≈ 205 mm (IMD normal)
-export const districtSeasonLPA = 205;
+// LPA-to-date for Pune district by 5 July ≈ 232 mm (IMD normal)
+export const districtSeasonLPA = 232;
 export const districtRainDeparture = +(((districtSeasonRain - districtSeasonLPA) / districtSeasonLPA) * 100).toFixed(1);
 
 // Security index (0–100). Weighted: storage 50%, rainfall trend 25%, YoY 25%.
