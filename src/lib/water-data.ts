@@ -122,8 +122,13 @@ export const wowStorageDelta = +(
   totalCapacity
 ).toFixed(1);
 
-// ---------- Current advisories (verified from published news, 20 Jun – 3 Jul 2026) ----------
+// ---------- Current advisories (verified from published news, 20 Jun – 5 Jul 2026) ----------
 export const events = [
+  { time: "05 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 34% storage (9.9 TMC) — Varasgaon at 30%, Panshet at 35%, Temghar climbs to 14% on heavy ghat rain." },
+  { time: "05 Jul 2026", tag: "IMD",            type: "warn",   title: "Red alert for Velhe, Mulshi — Velhe records 138 mm in 24h; district season rainfall now +4% above LPA." },
+  { time: "04 Jul 2026", tag: "PMC",            type: "safe",   title: "PMC lifts alternate-day supply in 28 of 41 wards; daily supply restored to Kothrud, Warje, Sinhagad Road, Hadapsar zones." },
+  { time: "04 Jul 2026", tag: "WRD",            type: "warn",   title: "Khadakwasla spillway discharge raised to 4,200 cusec into Mutha; downstream villages Kirkatwadi, Nanded warned of river rise." },
+  { time: "04 Jul 2026", tag: "IMD",            type: "warn",   title: "Mulshi 128 mm, Temghar catchment 118 mm in 24h — heaviest single-day for Temghar catchment this season." },
   { time: "03 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 27% storage (7.9 TMC) after 7 days of sustained ghat rainfall; Varasgaon adds 0.9 TMC in 48 hours." },
   { time: "03 Jul 2026", tag: "IMD",            type: "warn",   title: "Orange alert for Mulshi, Velhe, Maval talukas — 100–150 mm expected in next 24h; Khadakwasla, Panshet spillways on standby." },
   { time: "02 Jul 2026", tag: "PMC",            type: "info",   title: "PMC rolls back alternate-day supply in 14 of 41 wards; full restoration to be reviewed on 6 July if inflows hold above 4,000 cusec." },
@@ -143,8 +148,8 @@ export const events = [
 ];
 
 export const aiInsights = [
-  `Khadakwasla complex has recovered to ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 3 Jul — up from 4.05 TMC on 20 Jun after a week of active monsoon in the ghats.`,
-  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage now covers ~${daysAvailable} days without further inflows; ghat forecast keeps outlook constructive.`,
-  `Ghat-belt talukas (Mulshi +18%, Velhe +22%) are running above LPA, while eastern plains (Indapur -52%, Baramati -44%) remain rain-deficit — kharif sowing skewed to western Pune this season.`,
-  `Temghar recorded first inflow of the season on 30 Jun (1,400 cusec); Varasgaon and Panshet gained +12% and +12% fill respectively over the last 7 days.`,
+  `Khadakwasla complex has recovered to ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 5 Jul — nearly 2.5× the 20 Jun low of 4.05 TMC after 9 straight days of active ghat monsoon.`,
+  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage now covers ~${daysAvailable} days without further inflows; forecast keeps outlook constructive through mid-July.`,
+  `Ghat-belt talukas (Velhe +31%, Mulshi +26%, Maval +19%) are running well above LPA, while eastern plains (Indapur -46%, Baramati -38%) remain rain-deficit — kharif sowing skewed to western Pune.`,
+  `Temghar catchment recorded 118 mm in 24h on 4 Jul — biggest single-day spell of the season; dam storage jumped from 8% to 14% in 48 hours.`,
 ];
