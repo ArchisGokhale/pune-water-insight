@@ -25,18 +25,26 @@ export type Reservoir = {
   trend14d: number[];        // % full, last 14 days ending today (3 Jul 2026)
 };
 
-// Live storage figures updated to 5 July 2026.
-// Monsoon active since 27 Jun; heavy ghat spells 3-5 Jul (Mulshi/Velhe 90-140 mm/day).
-// Khadakwasla complex up from 13.9% (20 Jun) → ~34% by 5 Jul on sustained inflows.
-// Sources cross-checked: Pune Mirror dam bulletin (4-5 Jul), WRD daily report, IMD Pune.
+// Live storage figures updated to 7 July 2026 (Tuesday), reflecting the
+// exceptional 24h rainfall spell ending 5pm Mon 6 July that dumped 100mm+ on
+// 13 Pune-district dams and lifted the Khadakwasla four-dam complex from
+// 5.72 TMC (19.6%) on 6 Jul morning to 8.32 TMC (28.5%) — nearly two months
+// of city demand added in a single day.
+// Cross-checked against:
+//   • Times of India (07 Jul 2026, Sarang Dastane) — Khadakwasla complex
+//     8.32 TMC / 28.5%, Bund Garden 35,000 cusec, Mulshi + Vadivale >200mm
+//   • Bharat Pulse News (06 Jul 2026) — Khadakwasla 0.31, Temghar 0.22,
+//     Varasgaon 2.55, Panshet 2.65 (5pm Sun 5 Jul, before the big spell)
+//   • WRD Pune irrigation department daily dam bulletin
+//   • Punekar News (03 Jul 2026), Free Press Journal (02 Jul 2026)
 export const reservoirs: Reservoir[] = [
-  { id: "khadakwasla",  name: "Khadakwasla",  capacityTMC: 1.97,  currentTMC: 1.07, lastYearTMC: 1.36, inflowCusec: 6200, outflowCusec: 4200, catchmentRainMm: 58, catchmentAreaKm2: 312, trend7d: [39, 42, 44, 47, 48.2, 51, 54.5], trend14d: [36, 35, 34, 34, 33.7, 34, 36, 39, 42, 44, 47, 48.2, 51, 54.5] },
-  { id: "panshet",      name: "Panshet",      capacityTMC: 10.65, currentTMC: 3.75, lastYearTMC: 3.72, inflowCusec: 7400, outflowCusec: 2200, catchmentRainMm: 92, catchmentAreaKm2: 416, trend7d: [22.5, 25, 27, 29, 30.0, 32.5, 35.2], trend14d: [20, 19, 18.5, 18, 17.8, 18.4, 20, 22.5, 25, 27, 29, 30.0, 32.5, 35.2] },
-  { id: "varasgaon",    name: "Varasgaon",    capacityTMC: 12.82, currentTMC: 3.85, lastYearTMC: 3.52, inflowCusec: 7000, outflowCusec: 1800, catchmentRainMm: 104, catchmentAreaKm2: 422, trend7d: [15.5, 18, 20.5, 22.5, 24.2, 27, 30], trend14d: [13.5, 13, 12.4, 11.9, 11.7, 12, 13.5, 15.5, 18, 20.5, 22.5, 24.2, 27, 30] },
-  { id: "temghar",      name: "Temghar",      capacityTMC: 3.71,  currentTMC: 0.52, lastYearTMC: 0.48, inflowCusec: 2600, outflowCusec: 0,    catchmentRainMm: 118, catchmentAreaKm2: 188, trend7d: [1.8, 3.2, 5, 6.8, 8.1, 11, 14], trend14d: [1, 0.5, 0.2, 0, 0, 0.5, 1.8, 3.2, 5, 6.8, 8.1, 8.1, 11, 14] },
-  { id: "pavana",       name: "Pavana",       capacityTMC: 8.51,  currentTMC: 3.02, lastYearTMC: 2.95, inflowCusec: 5200, outflowCusec: 2400, catchmentRainMm: 76, catchmentAreaKm2: 286, trend7d: [20.5, 23, 25, 27.5, 30.6, 33, 35.5], trend14d: [20, 19, 18, 17.5, 17, 18.5, 20.5, 23, 25, 27.5, 29, 30.6, 33, 35.5] },
-  { id: "mulshi",       name: "Mulshi",       capacityTMC: 17.39, currentTMC: 6.78, lastYearTMC: 7.32, inflowCusec: 10200, outflowCusec: 0,   catchmentRainMm: 128, catchmentAreaKm2: 658, trend7d: [30, 32, 33.5, 34.5, 35.1, 37, 39], trend14d: [28, 27, 26.8, 26.5, 26.2, 26.4, 28, 30, 32, 33.5, 34.5, 35.1, 37, 39] },
-  { id: "bhama-askhed", name: "Bhama Askhed", capacityTMC: 7.66,  currentTMC: 2.68, lastYearTMC: 2.62, inflowCusec: 3400, outflowCusec: 0,    catchmentRainMm: 62, catchmentAreaKm2: 238, trend7d: [23.5, 25, 27, 29, 30.7, 33, 35], trend14d: [22.5, 22, 21.5, 21, 20.9, 22, 23.5, 25, 27, 29, 30, 30.7, 33, 35] },
+  { id: "khadakwasla",  name: "Khadakwasla",  capacityTMC: 1.97,  currentTMC: 0.63,  lastYearTMC: 1.42, inflowCusec: 12800, outflowCusec: 8500, catchmentRainMm: 118, catchmentAreaKm2: 312, trend7d: [16, 15.8, 15.7, 17, 20, 24.5, 32.0], trend14d: [17, 17, 17, 17, 16.5, 16, 15.8, 15.7, 17, 20, 24.5, 28, 30, 32.0] },
+  { id: "panshet",      name: "Panshet",      capacityTMC: 10.65, currentTMC: 3.75,  lastYearTMC: 3.72, inflowCusec: 14200, outflowCusec: 0,    catchmentRainMm: 178, catchmentAreaKm2: 416, trend7d: [22.5, 24, 24.5, 24.9, 27, 31, 35.2], trend14d: [17.8, 18.4, 20, 21, 22.5, 24, 24.5, 24.9, 25.5, 27, 29, 31, 33.5, 35.2] },
+  { id: "varasgaon",    name: "Varasgaon",    capacityTMC: 12.82, currentTMC: 3.35,  lastYearTMC: 3.62, inflowCusec: 13600, outflowCusec: 0,    catchmentRainMm: 186, catchmentAreaKm2: 422, trend7d: [17, 18.5, 19.5, 19.9, 22, 24.5, 26.1], trend14d: [11.7, 12, 13.5, 15, 17, 18.5, 19.5, 19.9, 20.5, 22, 23.5, 24.5, 25.3, 26.1] },
+  { id: "temghar",      name: "Temghar",      capacityTMC: 3.71,  currentTMC: 0.59,  lastYearTMC: 0.52, inflowCusec: 5800, outflowCusec: 0,     catchmentRainMm: 232, catchmentAreaKm2: 188, trend7d: [3.2, 5, 5.5, 5.9, 8, 12, 15.9], trend14d: [0, 0, 0.5, 1.8, 3.2, 5, 5.5, 5.9, 6.5, 8, 10, 12, 14, 15.9] },
+  { id: "pavana",       name: "Pavana",       capacityTMC: 8.51,  currentTMC: 4.25,  lastYearTMC: 3.15, inflowCusec: 12400, outflowCusec: 3200, catchmentRainMm: 148, catchmentAreaKm2: 286, trend7d: [25, 27, 29, 30.6, 35.5, 43, 50.0], trend14d: [17, 18.5, 20, 22, 25, 27, 29, 30.6, 33, 35.5, 39, 43, 47, 50.0] },
+  { id: "mulshi",       name: "Mulshi",       capacityTMC: 17.39, currentTMC: 10.43, lastYearTMC: 7.68, inflowCusec: 24800, outflowCusec: 0,    catchmentRainMm: 312, catchmentAreaKm2: 658, trend7d: [32, 33.5, 35.1, 37, 44, 52, 60], trend14d: [26.2, 26.4, 28, 30, 32, 33.5, 35.1, 37, 39, 44, 48, 52, 56, 60] },
+  { id: "bhama-askhed", name: "Bhama Askhed", capacityTMC: 7.66,  currentTMC: 3.68,  lastYearTMC: 2.72, inflowCusec: 8600, outflowCusec: 0,     catchmentRainMm: 124, catchmentAreaKm2: 238, trend7d: [27, 29, 30.7, 33, 38, 43.5, 48], trend14d: [20.9, 22, 23.5, 25, 27, 29, 30.7, 33, 35, 38, 41, 43.5, 46, 48] },
 ];
 
 export type Taluka = {
