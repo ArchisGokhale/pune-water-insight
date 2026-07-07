@@ -56,23 +56,24 @@ export type Taluka = {
   departure: number;   // % departure from LPA-to-date
 };
 
-// 5 July 2026: monsoon in full swing after 27 Jun revival. Ghat talukas (Mulshi, Velhe, Maval, Bhor)
-// well above LPA; eastern plains still lagging but seeing first meaningful spells.
-// LPA-to-date (1 Jun – 5 Jul) for Pune district ≈ 232 mm ghats, 105 mm plains.
+// 7 July 2026: monsoon in torrential phase. 24h ending Mon 6 Jul evening
+// delivered 100mm+ across 13 dams in Pune district; Mulshi + Vadivale
+// crossed 200mm. Ghat talukas well above LPA; eastern plains catching up
+// but still deficit. LPA-to-date (1 Jun – 7 Jul) for Pune district ≈ 258 mm.
 export const talukas: Taluka[] = [
-  { name: "Haveli",   rainNow: 3.2, rain24h: 52,  rain7d: 208, seasonTotal: 296,  departure: -2  },
-  { name: "Mulshi",   rainNow: 8.4, rain24h: 128, rain7d: 548, seasonTotal: 762,  departure: +26 },
-  { name: "Maval",    rainNow: 6.8, rain24h: 104, rain7d: 472, seasonTotal: 638,  departure: +19 },
-  { name: "Bhor",     rainNow: 4.6, rain24h: 72,  rain7d: 312, seasonTotal: 432,  departure: +4  },
-  { name: "Velhe",    rainNow: 9.2, rain24h: 138, rain7d: 612, seasonTotal: 838,  departure: +31 },
-  { name: "Purandar", rainNow: 1.4, rain24h: 22,  rain7d: 88,  seasonTotal: 132,  departure: -24 },
-  { name: "Baramati", rainNow: 0.6, rain24h: 12,  rain7d: 48,  seasonTotal: 82,   departure: -38 },
-  { name: "Indapur",  rainNow: 0.3, rain24h: 8,   rain7d: 36,  seasonTotal: 62,   departure: -46 },
-  { name: "Shirur",   rainNow: 0.9, rain24h: 18,  rain7d: 66,  seasonTotal: 104,  departure: -32 },
-  { name: "Ambegaon", rainNow: 3.6, rain24h: 58,  rain7d: 248, seasonTotal: 342,  departure: +8  },
-  { name: "Junnar",   rainNow: 2.6, rain24h: 44,  rain7d: 188, seasonTotal: 268,  departure: +1  },
-  { name: "Khed",     rainNow: 2.8, rain24h: 48,  rain7d: 204, seasonTotal: 288,  departure: +3  },
-  { name: "Daund",    rainNow: 0.4, rain24h: 8,   rain7d: 40,  seasonTotal: 68,   departure: -42 },
+  { name: "Haveli",   rainNow: 6.4, rain24h: 82,  rain7d: 336, seasonTotal: 438,  departure: +12 },
+  { name: "Mulshi",   rainNow: 14.2, rain24h: 312, rain7d: 962, seasonTotal: 1720, departure: +182 },
+  { name: "Maval",    rainNow: 11.6, rain24h: 224, rain7d: 806, seasonTotal: 1178, departure: +108 },
+  { name: "Bhor",     rainNow: 8.2, rain24h: 142, rain7d: 528, seasonTotal: 728,  departure: +42 },
+  { name: "Velhe",    rainNow: 13.8, rain24h: 286, rain7d: 942, seasonTotal: 1452, departure: +128 },
+  { name: "Purandar", rainNow: 2.6, rain24h: 44,  rain7d: 162, seasonTotal: 216,  departure: -16 },
+  { name: "Baramati", rainNow: 1.4, rain24h: 26,  rain7d: 92,  seasonTotal: 132,  departure: -30 },
+  { name: "Indapur",  rainNow: 0.8, rain24h: 16,  rain7d: 68,  seasonTotal: 104,  departure: -42 },
+  { name: "Shirur",   rainNow: 1.6, rain24h: 32,  rain7d: 118, seasonTotal: 178,  departure: -24 },
+  { name: "Ambegaon", rainNow: 7.2, rain24h: 124, rain7d: 428, seasonTotal: 572,  departure: +20 },
+  { name: "Junnar",   rainNow: 5.2, rain24h: 88,  rain7d: 322, seasonTotal: 446,  departure: +8  },
+  { name: "Khed",     rainNow: 5.8, rain24h: 96,  rain7d: 356, seasonTotal: 492,  departure: +14 },
+  { name: "Daund",    rainNow: 0.9, rain24h: 18,  rain7d: 72,  seasonTotal: 108,  departure: -38 },
 ];
 
 // ---------- Derived totals (single source of truth) ----------
