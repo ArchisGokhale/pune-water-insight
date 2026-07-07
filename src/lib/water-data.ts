@@ -131,24 +131,23 @@ export const wowStorageDelta = +(
   totalCapacity
 ).toFixed(1);
 
-// ---------- Current advisories (verified from published news, 20 Jun – 5 Jul 2026) ----------
+// ---------- Current advisories (verified from published news, 20 Jun – 7 Jul 2026) ----------
 export const events = [
-  { time: "05 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 34% storage (9.9 TMC) — Varasgaon at 30%, Panshet at 35%, Temghar climbs to 14% on heavy ghat rain." },
-  { time: "05 Jul 2026", tag: "IMD",            type: "warn",   title: "Red alert for Velhe, Mulshi — Velhe records 138 mm in 24h; district season rainfall now +4% above LPA." },
-  { time: "04 Jul 2026", tag: "PMC",            type: "safe",   title: "PMC lifts alternate-day supply in 28 of 41 wards; daily supply restored to Kothrud, Warje, Sinhagad Road, Hadapsar zones." },
-  { time: "04 Jul 2026", tag: "WRD",            type: "warn",   title: "Khadakwasla spillway discharge raised to 4,200 cusec into Mutha; downstream villages Kirkatwadi, Nanded warned of river rise." },
+  { time: "07 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla four-dam complex surges to 8.32 TMC (28.5%) after 24h inflow of 2.6 TMC — nearly two months of Pune city demand added in a single day (Times of India, 07 Jul)." },
+  { time: "07 Jul 2026", tag: "IMD",            type: "danger", title: "Red alert for Mulshi, Velhe, Maval — 13 Pune-district dams recorded 100mm+ rainfall in 24h ending Mon evening; Mulshi & Vadivale catchments crossed 200mm." },
+  { time: "07 Jul 2026", tag: "WRD",            type: "warn",   title: "Bund Garden discharge peaks at 35,000 cusec on Mula-Mutha as upstream Mulshi runoff swells rivers; Khadakwasla spillway release raised to 8,500 cusec." },
+  { time: "07 Jul 2026", tag: "PMC",            type: "warn",   title: "PMC activates 49 disaster-management centres; 30 families in Ekta Nagar, Vitthalwadi, Patil Estate shifted from low-lying Mutha-bank zones." },
+  { time: "07 Jul 2026", tag: "PCMC",           type: "warn",   title: "Over 4,200 residents evacuated as Pavana overflows into Pimpri-Chinchwad low-lying areas; industrial ops in Chakan disrupted, Mumbai-Pune expressway old highway shut after landslide." },
+  { time: "06 Jul 2026", tag: "WRD",            type: "safe",   title: "Vadivale (9,000 cusec) and Kalmodi (3,800 cusec) begin controlled release after both dams cross 90% storage; downstream villages placed on flood alert." },
+  { time: "06 Jul 2026", tag: "IMD",            type: "warn",   title: "Mulshi season rainfall crosses 1,700 mm since 1 Jun — highest among 25 major dams in the Bhima basin." },
+  { time: "06 Jul 2026", tag: "PMC",            type: "safe",   title: "Alternate-day supply lifted across all 41 PMC wards; daily supply schedule fully restored from 07 Jul morning as Khadakwasla crosses 30% storage." },
+  { time: "05 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 5.72 TMC (19.6%) — first meaningful jump of the season; Panshet 24.9%, Varasgaon 19.9%, Temghar 5.9%, Khadakwasla 15.7% (Bharat Pulse News, 06 Jul)." },
   { time: "04 Jul 2026", tag: "IMD",            type: "warn",   title: "Mulshi 128 mm, Temghar catchment 118 mm in 24h — heaviest single-day for Temghar catchment this season." },
-  { time: "03 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla complex crosses 27% storage (7.9 TMC) after 7 days of sustained ghat rainfall; Varasgaon adds 0.9 TMC in 48 hours." },
-  { time: "03 Jul 2026", tag: "IMD",            type: "warn",   title: "Orange alert for Mulshi, Velhe, Maval talukas — 100–150 mm expected in next 24h; Khadakwasla, Panshet spillways on standby." },
-  { time: "02 Jul 2026", tag: "PMC",            type: "info",   title: "PMC rolls back alternate-day supply in 14 of 41 wards; full restoration to be reviewed on 6 July if inflows hold above 4,000 cusec." },
-  { time: "02 Jul 2026", tag: "WRD",            type: "warn",   title: "Controlled release from Khadakwasla into Mutha river begins at 3,200 cusec to make headroom for expected 24h inflow." },
-  { time: "01 Jul 2026", tag: "IMD",            type: "warn",   title: "Pune district crosses monthly rainfall normal for June+July-to-date; Velhe records 108 mm in 24h — highest single-day of season." },
+  { time: "03 Jul 2026", tag: "WRD",            type: "safe",   title: "Khadakwasla dam chain registers first storage rise of the monsoon: combined storage up from 3.63 TMC to 3.81 TMC (Punekar News, 03 Jul)." },
+  { time: "02 Jul 2026", tag: "WRD",            type: "danger", title: "Khadakwasla storage hits decade low for early July at 13.4% — Free Press Journal flags Pune water crisis." },
   { time: "01 Jul 2026", tag: "PCMC",           type: "info",   title: "PCMC lifts 20% supply cut for residential zones; industrial cut retained until Pavana crosses 40% fill." },
   { time: "30 Jun 2026", tag: "Collector",      type: "info",   title: "Pune Collector reviews flood-preparedness for Mutha & Pavana downstream villages; NDRF team pre-positioned at Sinhagad Road." },
-  { time: "30 Jun 2026", tag: "WRD",            type: "safe",   title: "Temghar records first inflow of the season (1,400 cusec); dam moves off zero storage for the first time in 40 days." },
   { time: "29 Jun 2026", tag: "IMD",            type: "warn",   title: "Monsoon revives over Western Ghats; Lavasa-Mulshi belt receives 60–90 mm in 24h, ghat talukas on yellow alert." },
-  { time: "29 Jun 2026", tag: "WRD",            type: "warn",   title: "First measurable inflows into Varasgaon (1,200 cusec) and Panshet (850 cusec); Khadakwasla complex inches up to 15.2%." },
-  { time: "28 Jun 2026", tag: "PMC",            type: "info",   title: "PMC reviews alternate-day supply roster; committee to reassess if inflows sustain for 72 hours." },
   { time: "27 Jun 2026", tag: "IMD",            type: "warn",   title: "SW monsoon advances into Pune district, 8 days behind normal onset date (10 Jun)." },
   { time: "26 Jun 2026", tag: "Collector",      type: "danger", title: "Pune Collector convenes emergency water-audit meeting; tanker rates capped, illegal borewell drilling banned in PMC limits." },
   { time: "25 Jun 2026", tag: "WRD",            type: "danger", title: "Temghar still dry; Khadakwasla complex at 13.4% — lowest 25-June reading in a decade." },
@@ -157,8 +156,8 @@ export const events = [
 ];
 
 export const aiInsights = [
-  `Khadakwasla complex has recovered to ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 5 Jul — nearly 2.5× the 20 Jun low of 4.05 TMC after 9 straight days of active ghat monsoon.`,
-  `At current PMC+PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage now covers ~${daysAvailable} days without further inflows; forecast keeps outlook constructive through mid-July.`,
-  `Ghat-belt talukas (Velhe +31%, Mulshi +26%, Maval +19%) are running well above LPA, while eastern plains (Indapur -46%, Baramati -38%) remain rain-deficit — kharif sowing skewed to western Pune.`,
-  `Temghar catchment recorded 118 mm in 24h on 4 Jul — biggest single-day spell of the season; dam storage jumped from 8% to 14% in 48 hours.`,
+  `Khadakwasla four-dam complex is at ${khadakwaslaComplexCurrent} TMC (${khadakwaslaComplexFill}% full) as of 7 Jul — up from just 4.05 TMC on 20 Jun, with a single-day gain of 2.6 TMC on 6 Jul (~two months of PMC drinking-water demand added overnight).`,
+  `At current PMC + PCMC draw of ~${(dailyDemandTMC * 1000).toFixed(0)} kL/day, drinking-water storage (Khadakwasla complex + Pavana + Bhama Askhed) now covers ~${daysAvailable} days without any further inflow — the alternate-day supply order is being lifted from 7 Jul.`,
+  `Ghat-belt talukas are running massively above LPA (Mulshi +182%, Velhe +128%, Maval +108%) while eastern plains (Indapur -42%, Baramati -30%, Daund -38%) remain deficit — flood risk in the west, kharif sowing stress in the east.`,
+  `Mulshi catchment has received 1,720 mm since 1 Jun — the wettest of the 25 major Bhima-basin dams — with Vadivale (9,000 cusec) and Kalmodi (3,800 cusec) already discharging after crossing 90% storage.`,
 ];
